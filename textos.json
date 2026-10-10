@@ -1,0 +1,59 @@
+{
+  "aba": "engordando",
+  "topo": {
+    "titulo": "engordando",
+    "trocadilhos": [
+      {
+        "antes": "vai embrasando e"
+      },
+      {
+        "riscado": "embrasando"
+      }
+    ]
+  },
+  "catalogo": {
+    "precoAraujo": "~~{preco}~~"
+  },
+  "barra": {
+    "nenhumItem": "nenhum item",
+    "umItem": "1 item",
+    "variosItens": "{qtd} itens",
+    "pagar": "pagar com PIX"
+  },
+  "banner": {
+    "emoji": "💬",
+    "titulo": "Tem as moral de melhorar a vendinha?",
+    "texto": "Tá faltando alguma coisa? Algum preço tá absurdo? Acabou seu chocolatinho preferido? Me avisa!",
+    "mensagemPronta": "Fala, Rafa! Sobre a vendinha: "
+  },
+  "doacao": {
+    "pergunta": "Deseja doar {valor} pra {nome}?",
+    "explicacao": "Pagando mais um tiquinho você ajuda a manter a vendinha funcionando",
+    "naoDoar": "Hoje não",
+    "doar": "Doar {valor}",
+    "naoPerguntar": "não perguntar mais",
+    "linhaResumo": "{emoji} Doação pra {nome}"
+  },
+  "pix": {
+    "titulo": "Bora pagar 💸",
+    "linhaItem": "{emoji} {qtd}× {nome}",
+    "total": "Total",
+    "dica": "Escaneia o QR no app do banco ou copia o código:",
+    "copiar": "Copiar",
+    "copiado": "Copiado",
+    "paguei": "Paguei",
+    "voltar": "Voltar"
+  },
+  "obrigado": {
+    "emoji": "🙌",
+    "titulo": "Valeu demais!!",
+    "texto": "Pode pegar as bobagenzinhas lá e ser feliz. Se tiver acabado algum item, **não esquece de me avisar**!",
+    "fechar": "Fechar"
+  },
+  "obrigadoGeladeira": {
+    "emoji": "🧊",
+    "titulo": "Valeu demais!!",
+    "texto": "Pega sua bebida lá na geladeira! Só não esquece de **repor com o estoque** (como a geladeira é compartilhada, não dá pra deixar tudo lá de uma vez)",
+    "fechar": "Fechar"
+  }
+}

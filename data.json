@@ -1,0 +1,201 @@
+{
+  "pix": {
+    "chave": "+5531998841993",
+    "nome": "RAFAEL LIBANIO SOLLI",
+    "cidade": "BELO HORIZONTE"
+  },
+  "precificacao": {
+    "margem": 0.2,
+    "arredondamento": 0.25
+  },
+  "doacao": {
+    "ativo": true,
+    "nome": "baleiazuda",
+    "emoji": "🫍",
+    "valor": 0.1
+  },
+  "contato": {
+    "whatsapp": "5531998841993"
+  },
+  "produtos": [
+    {
+      "id": "COCA",
+      "nome": "Coca-Cola",
+      "detalhe": "350ml",
+      "emoji": "🥤",
+      "categoria": "Bebidas",
+      "ativo": true,
+      "geladeira": true,
+      "precoAraujo": 4.59,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 19.74,
+          "unidades": 6
+        }
+      ]
+    },
+    {
+      "id": "ZERO",
+      "nome": "Coca-Cola Zero",
+      "detalhe": "350ml",
+      "emoji": "🥤",
+      "categoria": "Bebidas",
+      "ativo": true,
+      "geladeira": true,
+      "precoAraujo": 4.59,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 39.48,
+          "unidades": 12
+        }
+      ]
+    },
+    {
+      "id": "MONSTER",
+      "nome": "Monster Zero",
+      "detalhe": "473ml",
+      "emoji": "⚡",
+      "categoria": "Bebidas",
+      "ativo": true,
+      "geladeira": true,
+      "precoAraujo": 11.49 ,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 53.88,
+          "unidades": 6
+        }
+      ]
+    },
+    {
+      "id": "KITKAT",
+      "nome": "Kit Kat",
+      "detalhe": "42g",
+      "emoji": "🍫",
+      "categoria": "Chocolates",
+      "ativo": true,
+      "precoAraujo": 4.29,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 83.52,
+          "unidades": 24
+        }
+      ]
+    },
+    {
+      "id": "SNIKER",
+      "nome": "Snickers",
+      "detalhe": "45g",
+      "emoji": "🥜",
+      "categoria": "Chocolates",
+      "ativo": true,
+      "precoAraujo": 4.69,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 71.8,
+          "unidades": 20
+        }
+      ]
+    },
+    {
+      "id": "TRENTO",
+      "nome": "Trento",
+      "detalhe": "29g",
+      "emoji": "🧇",
+      "categoria": "Chocolates",
+      "ativo": true,
+      "precoAraujo": 3.59,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 38.24,
+          "unidades": 16
+        }
+      ]
+    },
+    {
+      "id": "TRIDENT",
+      "nome": "Trident",
+      "detalhe": "hortelã 8g",
+      "emoji": "🌿",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "precoAraujo": 3.49,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 83.58,
+          "unidades": 42
+        }
+      ]
+    },
+    {
+      "id": "FINI",
+      "nome": "Fini",
+      "detalhe": "tubo 15g",
+      "emoji": "🍬",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "precoAraujo": null,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 23.76,
+          "unidades": 24
+        }
+      ]
+    },
+    {
+      "id": "POP",
+      "nome": "Pirulito Pop",
+      "detalhe": "cereja",
+      "emoji": "🍭",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "precoAraujo": null,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 10.98,
+          "unidades": 24
+        }
+      ]
+    },
+    {
+      "id": "LILITH",
+      "nome": "Bala Lilith",
+      "detalhe": "maçã verde",
+      "emoji": "🍏",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "precoAraujo": null,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 12.39,
+          "unidades": 96
+        }
+      ]
+    },
+    {
+      "id": "CHITA",
+      "nome": "Bala Chita",
+      "detalhe": "abacaxi",
+      "emoji": "🍍",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "precoAraujo": null,
+      "compras": [
+        {
+          "data": "2026-10-10",
+          "valor": 9.98,
+          "unidades": 96
+        }
+      ]
+    }
+  ]
+}

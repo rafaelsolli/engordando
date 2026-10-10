@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>engordando</title>
+  <meta name="theme-color" content="#002B4D">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍫</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <p class="topo-antes" id="topo-antes"></p>
+    <div class="topo-riscado"><span id="topo-riscado"></span></div>
+    <h1><span data-texto="topo.titulo"></span><span class="ponto">.</span></h1>
+  </header>
+
+  <main id="catalogo" class="catalogo">
+    <p class="carregando">Carregando gostosuras…</p>
+  </main>
+
+  <a class="banner" id="banner" target="_blank" rel="noopener" hidden>
+    <div class="banner-emoji" data-texto="banner.emoji"></div>
+    <div class="banner-info">
+      <h3 data-texto="banner.titulo"></h3>
+      <p data-texto="banner.texto"></p>
+    </div>
+    <span class="banner-seta" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+  </a>
+
+  <footer class="barra" id="barra">
+    <div class="barra-info">
+      <span id="barra-itens"></span>
+      <strong id="barra-total"></strong>
+    </div>
+    <button id="btn-pagar" class="btn btn-pagar" data-texto="barra.pagar" disabled></button>
+  </footer>
+
+  <div class="modal" id="modal-pix" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="pix-titulo">
+      <div id="doacao-etapa" hidden>
+        <div class="doacao-emoji" id="doacao-emoji"></div>
+        <h2 id="doacao-pergunta"></h2>
+        <p class="dica" id="doacao-explicacao"></p>
+        <div class="acoes">
+          <button id="btn-doar" class="btn btn-link"></button>
+          <button id="btn-nao-doar" class="btn btn-negar" data-texto="doacao.naoDoar"></button>
+        </div>
+        <label class="nao-perguntar">
+          <input type="checkbox" id="doacao-nao-perguntar">
+          <span data-texto="doacao.naoPerguntar"></span>
+        </label>
+      </div>
+      <div id="pix-etapa" hidden>
+        <h2 id="pix-titulo" data-texto="pix.titulo"></h2>
+        <ul id="pix-resumo" class="resumo"></ul>
+        <p class="resumo-total"><span data-texto="pix.total"></span> <strong id="pix-total"></strong></p>
+        <div id="pix-qr" class="qr"></div>
+        <p class="dica" data-texto="pix.dica"></p>
+        <div class="copia">
+          <input id="pix-codigo" readonly aria-label="Pix copia e cola">
+          <button id="btn-copiar" class="btn btn-sec"></button>
+        </div>
+        <div class="acoes">
+          <button id="btn-voltar" class="btn btn-link" data-texto="pix.voltar"></button>
+          <button id="btn-paguei" class="btn btn-pagar" data-texto="pix.paguei"></button>
+        </div>
+      </div>
+      <div id="obrigado-etapa" hidden>
+        <div class="obrigado-emoji" id="obrigado-emoji"></div>
+        <h2 id="obrigado-titulo"></h2>
+        <p id="obrigado-texto"></p>
+        <button id="btn-fechar" class="btn btn-pagar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
