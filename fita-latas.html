@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>engordando · fita das latas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Fitas pras latas da geladeira (lata de 350 ml / Monster: ~66 mm de diâmetro).
+       Cada fita tem 212 mm de volta + 10 mm de aba pra colar e fechar o anel, que
+       encaixa na lata sem colar nela. Imprimir em A4 paisagem, escala 100%,
+       margens "nenhuma", com gráficos de fundo. */
+    :root {
+      --verde: #00BA00;
+      --destaque: #00AAD5;
+      --escuro: #002B4D;
+      --claro: #B9D3E8;
+      --muted: #78858F;
+      --volta: 212mm;
+      --aba: 10mm;
+      --altura: 34mm;
+    }
+    @page { size: A4 landscape; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: #6B7C8A;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @media print { html, body { background: none; } }
+
+    .folha {
+      position: relative;
+      width: 297mm;
+      height: 210mm;
+      margin: 0 auto;
+      overflow: hidden;
+      background: #fff;
+      font-family: "DM Sans", sans-serif;
+      color: #12212C;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10mm;
+      gap: 3mm;
+    }
+    @media screen { .folha { margin: 24px auto; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); } }
+
+    .fita {
+      display: flex;
+      width: calc(var(--volta) + var(--aba));
+      height: var(--altura);
+      flex: none;
+    }
+
+    .volta {
+      width: var(--volta);
+      height: 100%;
+      display: flex;
+      align-items: stretch;
+      color: #fff;
+      text-transform: lowercase;
+      background: var(--escuro);
+      background-image:
+        radial-gradient(circle at 98% 0%, rgba(0, 170, 213, .4), transparent 30%),
+        radial-gradient(circle at 0% 100%, rgba(0, 186, 0, .3), transparent 28%);
+      outline: .3mm solid #12212C;
+    }
+    .secao {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 3mm;
+    }
+
+    .s-fit { width: 54mm; gap: 1.2mm; }
+    .s-fit img { width: 40mm; display: block; }
+    .s-fit small { font-size: 2.7mm; color: var(--claro); letter-spacing: .03em; }
+
+    .s-repoe { width: 86mm; }
+    .s-repoe strong {
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      font-size: 8.5mm;
+      line-height: 1;
+    }
+    .s-repoe strong .verde { color: var(--verde); }
+    .s-repoe > span { margin-top: 1.6mm; font-size: 3.1mm; color: var(--claro); line-height: 1.25; }
+
+    .s-fita { width: 72mm; }
+    .s-fita .emoji { font-size: 6mm; line-height: 1; }
+    .s-fita strong { margin-top: 1mm; font-family: "Outfit", sans-serif; font-size: 4.2mm; line-height: 1.1; }
+    .s-fita > span { margin-top: .8mm; font-size: 3mm; color: var(--claro); line-height: 1.25; }
+
+    /* aba pra colar as pontas e fechar o anel */
+    .aba {
+      width: var(--aba);
+      height: 100%;
+      display: grid;
+      place-items: center;
+      border: .3mm solid #12212C;
+      border-left: .3mm dashed var(--muted);
+      border-radius: 0 2mm 2mm 0;
+      background: repeating-linear-gradient(45deg, #EEF3F7 0 1.4mm, #fff 1.4mm 2.8mm);
+    }
+    .aba span {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 2.6mm;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: lowercase;
+    }
+
+    .montagem {
+      margin-top: 2mm;
+      width: calc(var(--volta) + var(--aba));
+      font-size: 3.2mm;
+      line-height: 1.45;
+      color: #12212C;
+      display: flex;
+      gap: 6mm;
+    }
+    .montagem b { font-family: "Outfit", sans-serif; }
+  </style>
+</head>
+<body>
+  <main class="folha" id="folha">
+    <template id="modelo">
+      <div class="fita">
+        <div class="volta">
+          <div class="secao s-fit">
+            <small>propriedade da</small>
+            <img src="img/logo-fit-branco.png" alt="Fit Economia de Energia">
+          </div>
+          <div class="secao s-repoe">
+            <strong>pegou? <span class="verde">repõe</span>!</strong>
+            <span>lembre-se de colocar outra lata<br>do estoque aqui na geladeira!</span>
+          </div>
+          <div class="secao s-fita">
+            <div class="emoji">♻️</div>
+            <strong>não jogue essa fitinha fora</strong>
+            <span>é só tirar dessa lata e colocar na próxima</span>
+          </div>
+        </div>
+        <div class="aba"><span>cola aqui</span></div>
+      </div>
+    </template>
+
+    <div class="montagem">
+      <div><b>como montar:</b> recorte cada fita pela borda, passe cola ou fita dupla face na aba listrada e cole por baixo da outra ponta, formando um anel. ele encaixa na lata sem colar nela.</div>
+    </div>
+  </main>
+
+  <script>
+    const FITAS = 5;
+
+    const folha = document.getElementById('folha');
+    const modelo = document.getElementById('modelo');
+    const montagem = folha.querySelector('.montagem');
+    for (let i = 0; i < FITAS; i++) {
+      const fita = modelo.content.cloneNode(true);
+      folha.insertBefore(fita, montagem);
+    }
+  </script>
+</body>
+</html>
