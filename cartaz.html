@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>engordando · cartaz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Cartaz A4 pra imprimir e colar na vendinha (Ctrl+P → A4, margens "nenhuma", com gráficos de fundo) */
+    :root {
+      --verde: #00BA00;
+      --destaque: #00AAD5;
+      --escuro: #002B4D;
+      --claro: #B9D3E8;
+      --riscado: #7F9AB0;
+    }
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      background: #6B7C8A;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    @media print { html, body { background: none; } }
+
+    .folha {
+      position: relative;
+      width: 210mm;
+      height: 297mm;
+      margin: 0 auto;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 22mm 18mm 16mm;
+      color: #fff;
+      text-align: center;
+      text-transform: lowercase;
+      font-family: "DM Sans", sans-serif;
+      background: var(--escuro);
+      background-image:
+        radial-gradient(circle at 90% 8%, rgba(0, 170, 213, .38), transparent 42%),
+        radial-gradient(circle at 5% 100%, rgba(0, 186, 0, .28), transparent 40%);
+    }
+    @media screen { .folha { margin: 24px auto; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); } }
+
+    /* emojis espalhados no fundo */
+    .confete { position: absolute; font-size: 15mm; opacity: .16; user-select: none; }
+
+    .riscado {
+      position: relative;
+      display: inline-block;
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      font-size: 15mm;
+      color: var(--riscado);
+      transform: rotate(-3deg);
+      margin-bottom: -4mm;
+    }
+    .riscado::after {
+      content: "";
+      position: absolute;
+      left: -6%;
+      top: 52%;
+      width: 112%;
+      height: 2.2mm;
+      border-radius: 2mm;
+      background: var(--verde);
+      transform: rotate(-4deg);
+    }
+    h1 {
+      margin: 0;
+      font-family: "Outfit", sans-serif;
+      font-weight: 800;
+      font-size: 32mm;
+      letter-spacing: -.03em;
+      line-height: 1;
+    }
+    h1 .ponto { color: var(--verde); }
+    .sub {
+      margin: 5mm 0 0;
+      font-size: 6mm;
+      color: var(--claro);
+    }
+
+    .qr-caixa {
+      margin-top: 12mm;
+      background: #fff;
+      border-radius: 9mm;
+      padding: 8mm;
+      border: 2.2mm solid var(--destaque);
+      box-shadow: 0 4mm 14mm rgba(0, 0, 0, .3);
+    }
+    #qr { width: 82mm; height: 82mm; }
+    #qr svg { display: block; width: 100%; height: 100%; }
+
+    .chamada {
+      margin: 10mm 0 0;
+      font-family: "Outfit", sans-serif;
+      font-weight: 700;
+      font-size: 9.5mm;
+      line-height: 1.15;
+    }
+    .caixa-alta { text-transform: uppercase; }
+
+    .passos {
+      list-style: none;
+      margin: 9mm 0 0;
+      padding: 0;
+      display: flex;
+      gap: 5mm;
+      width: 100%;
+    }
+    .passos li {
+      flex: 1;
+      padding: 5mm 4mm;
+      border-radius: 6mm;
+      background: rgba(255, 255, 255, .08);
+      border: .5mm solid rgba(255, 255, 255, .14);
+      font-size: 4.6mm;
+      line-height: 1.3;
+      color: var(--claro);
+    }
+    .passos .emoji { display: block; font-size: 10mm; margin-bottom: 2mm; }
+    .passos strong { display: block; color: #fff; font-size: 5.2mm; margin-bottom: 1mm; }
+
+    .rodape {
+      margin-top: auto;
+      font-size: 4.2mm;
+      color: var(--claro);
+      text-transform: none;
+    }
+    .rodape b { color: #fff; }
+  </style>
+</head>
+<body>
+  <main class="folha">
+    <span class="confete" style="top: 10mm; left: 12mm; transform: rotate(-18deg)">🍫</span>
+    <span class="confete" style="top: 12mm; right: 16mm; transform: rotate(12deg)">⚡</span>
+    <span class="confete" style="top: 90mm; left: 10mm; transform: rotate(10deg)">🍍</span>
+    <span class="confete" style="top: 108mm; right: 12mm; transform: rotate(14deg)">🥤</span>
+    <span class="confete" style="top: 145mm; left: 8mm; transform: rotate(-8deg)">🍭</span>
+    <span class="confete" style="top: 178mm; right: 9mm; transform: rotate(-12deg)">🍬</span>
+
+    <div class="riscado">embrasando</div>
+    <h1>engordando<span class="ponto">.</span></h1>
+
+    <div class="qr-caixa"><div id="qr"></div></div>
+
+    <p class="chamada">escaneie o QR code pra ver<br> os preços e pagar com <span class="caixa-alta">PIX</span></p>
+
+    <ol class="passos">
+      <li><span class="emoji">📱</span><strong>1. escaneie</strong>abre a tabela de preços no celular</li>
+      <li><span class="emoji">🛒</span><strong>2. escolha</strong>marca quanto vai levar de cada item</li>
+      <li><span class="emoji">💸</span><strong>3. pague</strong>com o QR ou o copia e cola do <span class="caixa-alta">PIX</span></li>
+    </ol>
+
+    <p class="rodape">(se não rolar, tenta abrir o link <b>rafaelsolli.github.io/engordando</b>)</p>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+  <script>
+    const qr = qrcode(0, 'M');
+    qr.addData('https://rafaelsolli.github.io/engordando');
+    qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  </script>
+</body>
+</html>
