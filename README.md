@@ -16,7 +16,7 @@ Tudo fica em [`data.json`](data.json):
     `{ "data": "2026-11-01", "valor": 83.52, "unidades": 24 }`
   - O preço é calculado sozinho: (soma dos valores ÷ soma das unidades) × (1 + margem), arredondado pra cima.
   - Quer forçar um preço? Coloque `"preco": 5.00` no produto, que ele tem prioridade sobre o cálculo.
-  - Acabou o estoque? Coloque `"ativo": false`.
+  - Acabou o estoque? Coloque `"esgotado": true`: o item continua na lista, mas cinza, com o selo "esgotado!" e sem os botões. Já `"ativo": false` tira o item da lista.
   - `precoAraujo`: preço do mesmo item na Araujo. Aparece riscado à esquerda do nosso só quando é maior; `null` ou menor/igual não mostra nada.
   - `"geladeira": true` marca o que fica na geladeira: se a compra tiver algum, a tela final usa os textos de `obrigadoGeladeira` (lembrete de repor) em vez de `obrigado`.
   - A ordem no arquivo é a ordem na página; categorias aparecem na ordem do primeiro item de cada uma.

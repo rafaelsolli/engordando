@@ -162,6 +162,22 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
   color: var(--muted);
 }
 
+/* sem estoque: card cinza, sem botões */
+.produto.esgotado { box-shadow: none; }
+.produto.esgotado .emoji,
+.produto.esgotado .info { filter: grayscale(1); opacity: .5; }
+.selo-esgotado {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid var(--muted);
+  color: var(--muted);
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  font-size: .9rem;
+  transform: rotate(-4deg);
+}
+
 .qtd { display: flex; align-items: center; gap: 6px; flex: none; }
 .qtd button {
   width: 38px; height: 38px;

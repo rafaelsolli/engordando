@@ -12,7 +12,8 @@
     ]
   },
   "catalogo": {
-    "precoAraujo": "~~{preco}~~"
+    "precoAraujo": "~~{preco}~~",
+    "esgotado": "esgotado!"
   },
   "barra": {
     "nenhumItem": "nenhum item",

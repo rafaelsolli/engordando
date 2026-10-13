@@ -120,7 +120,7 @@
 
   function itensNoCarrinho() {
     return produtosAtivos()
-      .filter((p) => carrinho[p.id] > 0)
+      .filter((p) => !p.esgotado && carrinho[p.id] > 0)
       .map((p) => ({ ...p, qtd: carrinho[p.id], subtotal: centavosDe(p) * carrinho[p.id] }));
   }
 
@@ -165,14 +165,23 @@
         escrever(preco, brl(centavosDe(p)));
         // preço da Araujo riscado, só quando o nosso é mais barato
         const araujo = Math.round((p.precoAraujo || 0) * 100);
-        if (araujo > centavosDe(p)) {
+        if (!p.esgotado && araujo > centavosDe(p)) {
           const span = document.createElement('span');
           span.className = 'preco-araujo';
           escrever(span, t('catalogo.precoAraujo', { preco: brl(araujo) }));
           preco.prepend(span, ' ');
         }
-        card.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1));
-        card.querySelector('.mais').addEventListener('click', () => alterar(p.id, +1));
+        if (p.esgotado) {
+          // continua na lista, mas cinza e sem os botões
+          card.classList.add('esgotado');
+          const selo = document.createElement('span');
+          selo.className = 'selo-esgotado';
+          escrever(selo, t('catalogo.esgotado'));
+          card.querySelector('.qtd').replaceWith(selo);
+        } else {
+          card.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1));
+          card.querySelector('.mais').addEventListener('click', () => alterar(p.id, +1));
+        }
         grade.appendChild(card);
       }
 
@@ -194,7 +203,7 @@
   }
 
   function atualizar() {
-    for (const card of document.querySelectorAll('.produto')) {
+    for (const card of document.querySelectorAll('.produto:not(.esgotado)')) {
       const q = carrinho[card.dataset.id] || 0;
       card.querySelector('.n').textContent = q;
       card.querySelector('.menos').disabled = q === 0;
