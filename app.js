@@ -71,7 +71,7 @@
 
   // Ex.: "2KKAT 3LILI 1FINI D0.75" (os ids vêm do data.json)
   function mensagemPix(itens, doacao) {
-    const partes = itens.map((i) => i.qtd + i.id.toUpperCase());
+    const partes = itens.map((i) => (i.unidades ?? i.qtd) + i.id.toUpperCase());
     if (doacao) partes.push('D' + (doacao / 100).toFixed(2));
     return partes.join(' ');
   }
@@ -99,29 +99,53 @@
   // ---------- Estado ----------
 
   let dados = null;
-  const carrinho = {}; // id -> quantidade
+  const carrinho = {}; // id -> unidades avulsas
+  const kits = {};     // id -> quantos kits
 
   const $ = (id) => document.getElementById(id);
   const produtosAtivos = () =>
     dados.produtos.filter((p) => p.ativo !== false && centavosDe(p) > 0);
   // Preço = custo médio ponderado das compras × (1 + margem), arredondado pra cima.
   // Um "preco" fixo no produto, se existir, tem prioridade.
-  function centavosDe(p) {
+  function centavosDe(p, margem = dados.precificacao?.margem ?? 0.2) {
     if (p.preco != null) return Math.round(p.preco * 100);
     const compras = p.compras || [];
     const valor = compras.reduce((s, c) => s + c.valor, 0);
     const unidades = compras.reduce((s, c) => s + c.unidades, 0);
     if (!unidades) return 0;
-    const { margem = 0.2, arredondamento = 0.25 } = dados.precificacao || {};
-    const passo = Math.round(arredondamento * 100);
+    const passo = Math.round((dados.precificacao?.arredondamento ?? 0.25) * 100);
     const bruto = (valor * 100 / unidades) * (1 + margem);
     return Math.ceil(bruto / passo - 1e-9) * passo;
   }
 
+  // "Leve mais por menos": no kit, cada unidade sai com a margem menor.
+  // Só aparece nos produtos com "kit": true, sem preço fixo, e se ficar mais barato
+  // que a unidade (nas balas, o arredondamento empata).
+  const tamanhoKit = () => dados.precificacao?.kit?.quantidade ?? 3;
+  function precoKitDe(p) {
+    const kit = dados.precificacao?.kit;
+    if (!kit || !p.kit || p.preco != null || p.esgotado) return 0;
+    const preco = centavosDe(p, kit.margem ?? 0.1);
+    return preco < centavosDe(p) ? preco : 0;
+  }
+
+  // qtd = unidades avulsas, kits = nº de kits, unidades = total de unidades
   function itensNoCarrinho() {
     return produtosAtivos()
-      .filter((p) => !p.esgotado && carrinho[p.id] > 0)
-      .map((p) => ({ ...p, qtd: carrinho[p.id], subtotal: centavosDe(p) * carrinho[p.id] }));
+      .filter((p) => !p.esgotado)
+      .map((p) => {
+        const qtd = carrinho[p.id] || 0;
+        const k = precoKitDe(p) ? kits[p.id] || 0 : 0;
+        const unidadesKit = k * tamanhoKit();
+        return {
+          ...p, qtd, kits: k, unidadesKit,
+          unidades: qtd + unidadesKit,
+          subtotalAvulso: centavosDe(p) * qtd,
+          subtotalKit: precoKitDe(p) * unidadesKit,
+          subtotal: centavosDe(p) * qtd + precoKitDe(p) * unidadesKit,
+        };
+      })
+      .filter((i) => i.unidades > 0);
   }
 
   // ---------- Render ----------
@@ -153,7 +177,7 @@
             <div class="detalhe"></div>
             <div class="preco"></div>
           </div>
-          <div class="qtd">
+          <div class="qtd qtd-un">
             <button class="menos" aria-label="Remover um">−</button>
             <span class="n">0</span>
             <button class="mais" aria-label="Adicionar um">+</button>
@@ -179,8 +203,9 @@
           escrever(selo, t('catalogo.esgotado'));
           card.querySelector('.qtd').replaceWith(selo);
         } else {
-          card.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1));
-          card.querySelector('.mais').addEventListener('click', () => alterar(p.id, +1));
+          card.querySelector('.qtd-un .menos').addEventListener('click', () => alterar(p.id, -1));
+          card.querySelector('.qtd-un .mais').addEventListener('click', () => alterar(p.id, +1));
+          if (precoKitDe(p)) card.appendChild(linhaKit(p));
         }
         grade.appendChild(card);
       }
@@ -191,11 +216,32 @@
     atualizar();
   }
 
-  function alterar(id, delta) {
-    carrinho[id] = Math.max(0, (carrinho[id] || 0) + delta);
+  // linha "🍫×3 R$ 4,00 cada" com −/+ de kit em kit
+  function linhaKit(p) {
+    const linha = document.createElement('div');
+    linha.className = 'kit';
+    linha.innerHTML = `
+      <span class="kit-icone" aria-hidden="true"><span class="kit-emoji"></span><span class="kit-qtd"></span></span>
+      <span class="kit-preco"></span>
+      <div class="qtd qtd-kit">
+        <button class="menos" aria-label="Remover um kit">−</button>
+        <span class="n">0</span>
+        <button class="mais" aria-label="Adicionar um kit">+</button>
+      </div>`;
+    linha.querySelector('.kit-emoji').textContent = p.emoji || '🍬';
+    escrever(linha.querySelector('.kit-qtd'), t('catalogo.kit', { qtd: tamanhoKit() }));
+    escrever(linha.querySelector('.kit-preco'), t('catalogo.kitPreco', { preco: brl(precoKitDe(p)) }));
+    linha.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1, true));
+    linha.querySelector('.mais').addEventListener('click', () => alterar(p.id, +1, true));
+    return linha;
+  }
+
+  function alterar(id, delta, kit = false) {
+    const alvo = kit ? kits : carrinho;
+    alvo[id] = Math.max(0, (alvo[id] || 0) + delta);
     atualizar();
     if (delta > 0) {
-      const n = document.querySelector(`.produto[data-id="${id}"] .n`);
+      const n = document.querySelector(`.produto[data-id="${id}"] ${kit ? '.qtd-kit' : '.qtd-un'} .n`);
       n.classList.remove('pop');
       void n.offsetWidth; // reinicia a animação
       n.classList.add('pop');
@@ -205,12 +251,19 @@
   function atualizar() {
     for (const card of document.querySelectorAll('.produto:not(.esgotado)')) {
       const q = carrinho[card.dataset.id] || 0;
-      card.querySelector('.n').textContent = q;
-      card.querySelector('.menos').disabled = q === 0;
-      card.classList.toggle('no-carrinho', q > 0);
+      card.querySelector('.qtd-un .n').textContent = q;
+      card.querySelector('.qtd-un .menos').disabled = q === 0;
+      // no kit, o contador mostra unidades (3, 6, 9…)
+      const k = kits[card.dataset.id] || 0;
+      const kit = card.querySelector('.qtd-kit');
+      if (kit) {
+        kit.querySelector('.n').textContent = k * tamanhoKit();
+        kit.querySelector('.menos').disabled = k === 0;
+      }
+      card.classList.toggle('no-carrinho', q + k > 0);
     }
     const itens = itensNoCarrinho();
-    const qtd = itens.reduce((s, i) => s + i.qtd, 0);
+    const qtd = itens.reduce((s, i) => s + i.unidades, 0);
     const total = itens.reduce((s, i) => s + i.subtotal, 0);
     escrever($('barra-itens'),
       t(qtd === 0 ? 'barra.nenhumItem' : qtd === 1 ? 'barra.umItem' : 'barra.variosItens', { qtd }));
@@ -280,8 +333,9 @@
     const resumo = $('pix-resumo');
     resumo.innerHTML = '';
     for (const i of itens) {
-      const texto = t('pix.linhaItem', { emoji: i.emoji || '🍬', qtd: i.qtd, nome: i.nome });
-      resumo.appendChild(linhaResumo(texto, i.subtotal));
+      const vars = { emoji: i.emoji || '🍬', nome: i.nome };
+      if (i.qtd) resumo.appendChild(linhaResumo(t('pix.linhaItem', { ...vars, qtd: i.qtd }), i.subtotalAvulso));
+      if (i.kits) resumo.appendChild(linhaResumo(t('pix.linhaKit', { ...vars, qtd: i.unidadesKit }), i.subtotalKit));
     }
     if (doacao) {
       const d = dados.doacao;
@@ -324,7 +378,7 @@
   function paguei() {
     const bebidas = itensNoCarrinho()
       .filter((i) => i.geladeira)
-      .map((i) => (i.qtd > 1 ? `${i.qtd} ${i.nome}` : i.nome));
+      .map((i) => (i.unidades > 1 ? `${i.unidades} ${i.nome}` : i.nome));
     const chave = bebidas.length ? 'obrigadoGeladeira' : 'obrigado';
     const vars = { bebidas: listar(bebidas) };
     for (const campo of ['emoji', 'titulo', 'texto']) {
@@ -333,6 +387,7 @@
     escrever($('btn-fechar'), t(`${chave}.fechar`));
 
     for (const id of Object.keys(carrinho)) delete carrinho[id];
+    for (const id of Object.keys(kits)) delete kits[id];
     atualizar();
     etapa('obrigado');
   }
@@ -345,6 +400,29 @@
     $('banner').href = `https://wa.me/${numero}?text=${texto}`;
     $('banner').hidden = false;
   }
+
+  // ---------- Tema ----------
+  // Sem escolha salva, segue o aparelho. O botão alterna e grava a escolha.
+
+  const escuroDoAparelho = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const temaAtual = () => document.documentElement.dataset.tema || (escuroDoAparelho() ? 'escuro' : 'claro');
+
+  function renderTema() {
+    const escuro = temaAtual() === 'escuro';
+    $('btn-tema').textContent = escuro ? '☀️' : '🌙';
+    $('btn-tema').setAttribute('aria-label', escuro ? 'usar tema claro' : 'usar tema escuro');
+  }
+
+  function trocarTema() {
+    const novo = temaAtual() === 'escuro' ? 'claro' : 'escuro';
+    document.documentElement.dataset.tema = novo;
+    try { localStorage.setItem('engordando:tema', novo); } catch { /* sem storage */ }
+    renderTema();
+  }
+
+  $('btn-tema').addEventListener('click', trocarTema);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderTema);
+  renderTema();
 
   // ---------- Init ----------
 
@@ -377,7 +455,7 @@
 
   // exposto pra testes no console
   window.engordando = {
-    pixPayload, crc16, centavosDe, mensagemPix, t,
+    pixPayload, crc16, centavosDe, precoKitDe, mensagemPix, t,
     setDados: (d) => (dados = d), setTextos: (x) => (textos = x),
   };
 })();

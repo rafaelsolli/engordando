@@ -6,7 +6,11 @@
   },
   "precificacao": {
     "margem": 0.2,
-    "arredondamento": 0.25
+    "arredondamento": 0.25,
+    "kit": {
+      "quantidade": 3,
+      "margem": 0.1
+    }
   },
   "doacao": {
     "ativo": true,
@@ -26,8 +30,9 @@
       "categoria": "Bebidas",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "geladeira": true,
-      "precoAraujo": 4.59,
+      "precoAraujo": 4.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -44,8 +49,9 @@
       "categoria": "Bebidas",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "geladeira": true,
-      "precoAraujo": 4.59,
+      "precoAraujo": 4.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -62,8 +68,9 @@
       "categoria": "Bebidas",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "geladeira": true,
-      "precoAraujo": 11.49,
+      "precoAraujo": 9.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -80,6 +87,7 @@
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
+      "kit": true,
       "precoAraujo": 4.29,
       "compras": [
         {
@@ -97,6 +105,7 @@
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
+      "kit": true,
       "precoAraujo": 4.69,
       "compras": [
         {
@@ -114,6 +123,7 @@
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
+      "kit": true,
       "precoAraujo": 3.59,
       "compras": [
         {
@@ -131,6 +141,7 @@
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
+      "kit": true,
       "precoAraujo": 3.49,
       "compras": [
         {
@@ -148,6 +159,7 @@
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "precoAraujo": null,
       "compras": [
         {
@@ -165,6 +177,7 @@
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "precoAraujo": null,
       "compras": [
         {
@@ -182,6 +195,7 @@
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "precoAraujo": null,
       "compras": [
         {
@@ -199,6 +213,7 @@
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
+      "kit": false,
       "precoAraujo": null,
       "compras": [
         {

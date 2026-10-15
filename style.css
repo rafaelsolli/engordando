@@ -13,17 +13,35 @@
   --borda: #E3E8ED;
   --sombra: 0 2px 10px rgba(0, 43, 77, .08);
   --raio: 18px;
+  --azul-texto: var(--primaria); /* títulos e preços; no escuro vira o azul claro */
+  --cor-x3: var(--escuro);       /* o "×3" do kit; no escuro vira branco */
+  color-scheme: light;
 }
 
+/* Tema escuro: segue o aparelho, a não ser que a pessoa force pelo botão (data-tema) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-tema="claro"]) {
     --fundo: #0B1824;
     --texto: #E8EEF3;
     --muted: #93A1AC;
     --card: #13263A;
     --borda: #213A52;
     --sombra: 0 2px 10px rgba(0, 0, 0, .35);
+    --azul-texto: var(--destaque);
+    --cor-x3: #fff;
+    color-scheme: dark;
   }
+}
+:root[data-tema="escuro"] {
+  --fundo: #0B1824;
+  --texto: #E8EEF3;
+  --muted: #93A1AC;
+  --card: #13263A;
+  --borda: #213A52;
+  --sombra: 0 2px 10px rgba(0, 0, 0, .35);
+  --azul-texto: var(--destaque);
+  --cor-x3: #fff;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -34,7 +52,7 @@ body {
   font-family: "DM Sans", system-ui, sans-serif;
   background: var(--fundo);
   color: var(--texto);
-  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  padding-bottom: calc(150px + env(safe-area-inset-bottom)); /* espaço pro rodapé e o botão de tema */
 }
 
 h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
@@ -107,16 +125,14 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 .categoria h2 {
   font-size: 1.25rem;
   margin: 24px 4px 12px;
-  color: var(--primaria);
-}
-@media (prefers-color-scheme: dark) {
-  .categoria h2 { color: var(--destaque); }
+  color: var(--azul-texto);
 }
 
 .grade {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
+  align-items: start; /* card sem kit não estica pra altura do vizinho com kit */
 }
 @media (min-width: 640px) { .grade { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 900px) { .grade { grid-template-columns: 1fr 1fr 1fr; } }
@@ -148,11 +164,8 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 .produto .preco {
   font-family: "Outfit", sans-serif;
   font-weight: 700;
-  color: var(--primaria);
+  color: var(--azul-texto);
   margin-top: 2px;
-}
-@media (prefers-color-scheme: dark) {
-  .produto .preco { color: var(--destaque); }
 }
 
 .produto .preco-araujo {
@@ -177,6 +190,38 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
   font-size: .9rem;
   transform: rotate(-4deg);
 }
+
+/* linha do kit ("leve mais por menos") embaixo do produto */
+.produto { flex-wrap: wrap; }
+.kit {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  margin-top: 2px;
+  border-top: 1px dashed var(--borda);
+}
+/* emoji do produto com um "×3" pequeno sobreposto no canto */
+.kit-icone { position: relative; flex: none; width: 52px; text-align: center; } /* mesma largura do emoji do produto */
+.kit-emoji { font-size: 1.4rem; line-height: 1; }
+.kit-qtd {
+  position: absolute;
+  right: 6px;
+  bottom: -4px;
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--cor-x3);
+}
+.kit-preco {
+  flex: 1;
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  color: var(--verde);
+  white-space: nowrap;
+}
+.qtd-kit button { width: 32px; height: 32px; font-size: 1.15rem; }
 
 .qtd { display: flex; align-items: center; gap: 6px; flex: none; }
 .qtd button {
@@ -237,6 +282,27 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 }
 .banner:hover .banner-seta { transform: translateX(4px); }
 .banner:active { transform: scale(.98); }
+
+/* Botão de tema, fixo à direita logo acima do rodapé */
+.btn-tema {
+  position: fixed;
+  right: 16px;
+  bottom: calc(88px + env(safe-area-inset-bottom));
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--borda);
+  background: var(--card);
+  box-shadow: var(--sombra);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-tema:active { transform: scale(.92); }
 
 /* Barra inferior */
 .barra {
@@ -395,10 +461,7 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 @keyframes nada {
   50% { transform: translateY(-8px) rotate(-6deg); }
 }
-.resumo li.doacao { color: var(--primaria); font-weight: 700; }
-@media (prefers-color-scheme: dark) {
-  .resumo li.doacao { color: var(--destaque); }
-}
+.resumo li.doacao { color: var(--azul-texto); font-weight: 700; }
 
 /* botões não herdam o lowercase do body por padrão */
 button { text-transform: inherit; }

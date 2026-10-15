@@ -13,7 +13,9 @@
   },
   "catalogo": {
     "precoAraujo": "~~{preco}~~",
-    "esgotado": "esgotado!"
+    "esgotado": "esgotado!",
+    "kit": "×{qtd}",
+    "kitPreco": "{preco} cada"
   },
   "barra": {
     "nenhumItem": "nenhum item",
@@ -43,7 +45,8 @@
     "copiar": "Copiar",
     "copiado": "Copiado",
     "paguei": "Paguei",
-    "voltar": "Voltar"
+    "voltar": "Voltar",
+    "linhaKit": "{emoji} {qtd}× {nome} (kit)"
   },
   "obrigado": {
     "emoji": "🙌",

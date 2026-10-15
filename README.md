@@ -8,6 +8,7 @@ Tudo fica em [`data.json`](data.json):
 
 - `pix`: chave (telefone no formato `+55DDDNUMERO`), nome (até 25 caracteres, sem acento) e cidade (até 15).
 - `precificacao`: `margem` (0.20 = 20%) e `arredondamento` (0.25 = sempre arredonda pra cima de R$ 0,25 em R$ 0,25).
+  - `kit`: o "leve mais por menos". Cada produto ganha uma linha de kit com `quantidade` unidades (3) a um preço calculado com a `margem` do kit (0.10 = 10%). A linha só aparece nos produtos com `"kit": true`, quando o kit sai mais barato que a unidade e o produto não tem preço fixo. Na mensagem do Pix vai o total de unidades (avulsas + kits).
 - `doacao`: antes do Pix, pergunta se a pessoa quer doar `valor` (fixo) pra `nome`. Tem um "não perguntar mais" que fica salvo no navegador da pessoa. `"ativo": false` desliga pra todo mundo.
 - `contato.whatsapp`: número (com DDI e DDD) do banner no fim da lista. O texto pronto da mensagem fica em `textos.json` → `banner.mensagemPronta`. Sem número, o banner some. O banner inteiro é o link.
 - `produtos`: cada item tem `id`, `nome`, `detalhe`, `emoji`, `categoria`, `ativo` e `compras`.
