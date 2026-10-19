@@ -222,6 +222,24 @@
           "unidades": 96
         }
       ]
+    },
+    {
+      "id": "PACOCA",
+      "nome": "Paçoquinha",
+      "detalhe": "amendoim",
+      "emoji": "🥜",
+      "categoria": "Balas & cia",
+      "ativo": true,
+      "esgotado": false,
+      "kit": true,
+      "precoAraujo": null,
+      "compras": [
+        {
+          "data": "2026-10-19",
+          "valor": 8.33,
+          "unidades": 20
+        }
+      ]
     }
   ]
 }
