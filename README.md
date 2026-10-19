@@ -12,6 +12,7 @@ Tudo fica em [`data.json`](data.json):
 - `doacao`: antes do Pix, pergunta se a pessoa quer doar `valor` (fixo) pra `nome`. Tem um "não perguntar mais" que fica salvo no navegador da pessoa. `"ativo": false` desliga pra todo mundo.
 - `contato.whatsapp`: número (com DDI e DDD) do banner no fim da lista. O texto pronto da mensagem fica em `textos.json` → `banner.mensagemPronta`. Sem número, o banner some. O banner inteiro é o link.
 - `produtos`: cada item tem `id`, `nome`, `detalhe`, `emoji`, `categoria`, `ativo` e `compras`.
+  - `imagem`: foto do produto (PNG com fundo transparente, quadrado, ~256px) em `img/produtos/`. Sem ela, ou se não carregar, aparece o `emoji`.
   - O `id` (curto, ~4 letras, único) vai na mensagem do Pix pra contabilizar as vendas, ex.: `2KKAT 3LILI 1FINI D0.75` (`D` = doação). A mensagem tem limite de ~59 caracteres; carrinhos gigantes são cortados no fim.
   - **Repôs estoque?** Adicione uma linha em `compras` com o que pagou e quantas unidades vieram:
     `{ "data": "2026-11-01", "valor": 83.52, "unidades": 24 }`

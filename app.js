@@ -150,6 +150,18 @@
 
   // ---------- Render ----------
 
+  // Foto do produto (campo "imagem"); sem foto, ou se ela não carregar, fica o emoji
+  function icone(el, p) {
+    const emoji = () => { el.textContent = p.emoji || '🍬'; };
+    if (!p.imagem) return emoji();
+    const img = document.createElement('img');
+    img.src = p.imagem;
+    img.alt = '';
+    img.addEventListener('error', () => { el.classList.remove('com-foto'); emoji(); }, { once: true });
+    el.replaceChildren(img);
+    el.classList.add('com-foto');
+  }
+
   function renderCatalogo() {
     const porCategoria = {};
     for (const p of produtosAtivos()) {
@@ -182,7 +194,7 @@
             <span class="n">0</span>
             <button class="mais" aria-label="Adicionar um">+</button>
           </div>`;
-        card.querySelector('.emoji').textContent = p.emoji || '🍬';
+        icone(card.querySelector('.emoji'), p);
         card.querySelector('.nome').textContent = p.nome;
         card.querySelector('.detalhe').textContent = p.detalhe || '';
         const preco = card.querySelector('.preco');
@@ -216,21 +228,21 @@
     atualizar();
   }
 
-  // linha "🍫×3 R$ 4,00 cada" com −/+ de kit em kit
+  // linha "🍫 R$ 4,00 cada ×3" com −/+ de kit em kit
   function linhaKit(p) {
     const linha = document.createElement('div');
     linha.className = 'kit';
     linha.innerHTML = `
-      <span class="kit-icone" aria-hidden="true"><span class="kit-emoji"></span><span class="kit-qtd"></span></span>
-      <span class="kit-preco"></span>
+      <span class="kit-icone" aria-hidden="true"><span class="kit-emoji"></span></span>
+      <span class="kit-preco"><span class="kit-valor"></span> <span class="kit-qtd"></span></span>
       <div class="qtd qtd-kit">
         <button class="menos" aria-label="Remover um kit">−</button>
         <span class="n">0</span>
         <button class="mais" aria-label="Adicionar um kit">+</button>
       </div>`;
-    linha.querySelector('.kit-emoji').textContent = p.emoji || '🍬';
+    icone(linha.querySelector('.kit-emoji'), p);
     escrever(linha.querySelector('.kit-qtd'), t('catalogo.kit', { qtd: tamanhoKit() }));
-    escrever(linha.querySelector('.kit-preco'), t('catalogo.kitPreco', { preco: brl(precoKitDe(p)) }));
+    escrever(linha.querySelector('.kit-valor'), t('catalogo.kitPreco', { preco: brl(precoKitDe(p)) }));
     linha.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1, true));
     linha.querySelector('.mais').addEventListener('click', () => alterar(p.id, +1, true));
     return linha;
