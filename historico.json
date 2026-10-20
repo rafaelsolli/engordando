@@ -4,6 +4,10 @@
     { "email": "raul.marinho@fitenergia.com.br", "data": "2026-10-19T15:14:00-03:00", "valor": 5.10 },
     { "email": "daniel.gallo@fitenergia.com.br", "data": "2026-10-19T15:31:00-03:00", "valor": 2 },
     { "email": "raul.marinho@fitenergia.com.br", "data": "2026-10-19T16:10:00-03:00", "valor": 12 },
-    { "email": "raul.marinho@fitenergia.com.br", "data": "2026-10-19T17:50:00-03:00", "valor": 8.75 }
+    { "email": "raul.marinho@fitenergia.com.br", "data": "2026-10-19T17:50:00-03:00", "valor": 8.75 },
+    { "email": "joao.ribeiro@fitenergia.com.br", "data": "2026-10-20T13:01:00-03:00", "valor": 1.50 },
+    { "email": "raul.marinho@fitenergia.com.br", "data": "2026-10-20T13:01:00-03:00", "valor": 12 },
+    { "email": "alice.alves@fitenergia.com.br", "data": "2026-10-20T13:38:00-03:00", "valor": 4.25 },
+    { "email": "rafael.solli@fitenergia.com.br", "data": "2026-10-20T18:00:00-03:00", "valor": 10.75 }
   ]
 }
