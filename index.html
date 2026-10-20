@@ -19,15 +19,30 @@
   </script>
 </head>
 <body>
-  <header class="topo">
+  <header class="topo" id="topo">
+    <button class="btn-conta" type="button"></button>
     <p class="topo-antes" id="topo-antes"></p>
     <div class="topo-riscado"><span id="topo-riscado"></span></div>
-    <h1><span data-texto="topo.titulo"></span><span class="ponto">.</span></h1>
+    <!-- na rolagem, as letras escorregam pra trás do "e" e o "e." vai pro canto -->
+    <h1 id="titulo"><span class="marca" id="marca" aria-hidden="true"></span></h1>
   </header>
 
+  <!-- só a lista rola; topo e rodapé ficam parados -->
+  <div class="rolagem" id="rolagem">
   <main id="catalogo" class="catalogo">
     <p class="carregando">Carregando gostosuras…</p>
   </main>
+
+  <!-- cashback do mês; sem login, convida pra entrar -->
+  <div class="banner banner-cashback" id="banner-cashback" hidden>
+    <div class="banner-emoji" id="cashback-emoji" aria-hidden="true"></div>
+    <div class="banner-info">
+      <h3 id="cashback-titulo"></h3>
+      <div class="progresso-barra" id="cashback-barra"><span id="cashback-preenchido"></span></div>
+      <p id="cashback-texto"></p>
+    </div>
+    <span class="banner-seta" id="cashback-seta" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+  </div>
 
   <a class="banner" id="banner" target="_blank" rel="noopener" hidden>
     <div class="banner-emoji" data-texto="banner.emoji"></div>
@@ -37,6 +52,15 @@
     </div>
     <span class="banner-seta" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
   </a>
+  </div>
+
+  <!-- setinhas que avisam que tem mais lista pra cima/baixo -->
+  <button class="seta seta-cima" id="seta-cima" type="button" aria-label="rolar pra cima" tabindex="-1">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+  </button>
+  <button class="seta seta-baixo" id="seta-baixo" type="button" aria-label="rolar pra baixo" tabindex="-1">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
 
   <button class="btn-tema" id="btn-tema" type="button"></button>
 
@@ -66,6 +90,10 @@
       <div id="pix-etapa" hidden>
         <h2 id="pix-titulo" data-texto="pix.titulo"></h2>
         <ul id="pix-resumo" class="resumo"></ul>
+        <label class="nao-perguntar cupom-opcao" id="pix-cupom" hidden>
+          <input type="checkbox" id="pix-cupom-usar">
+          <span id="pix-cupom-texto"></span>
+        </label>
         <p class="resumo-total"><span data-texto="pix.total"></span> <strong id="pix-total"></strong></p>
         <div id="pix-qr" class="qr"></div>
         <p class="dica" data-texto="pix.dica"></p>
@@ -84,6 +112,26 @@
         <p id="obrigado-texto"></p>
         <button id="btn-fechar" class="btn btn-pagar"></button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-entrar" hidden>
+    <div class="modal-caixa" role="dialog" aria-modal="true" aria-labelledby="entrar-titulo">
+      <form id="form-entrar" novalidate>
+        <h2 id="entrar-titulo" data-texto="conta.titulo"></h2>
+        <p class="dica" data-texto="conta.dica"></p>
+        <!-- digita só o usuário; o domínio fica fixo do lado -->
+        <label class="campo campo-email">
+          <input id="entrar-email" type="text" inputmode="email" autocomplete="username"
+                 autocapitalize="none" spellcheck="false" aria-describedby="entrar-erro">
+          <span class="sufixo" id="entrar-sufixo"></span>
+        </label>
+        <p class="erro-campo" id="entrar-erro" data-texto="conta.erro" hidden></p>
+        <div class="acoes">
+          <button type="button" id="btn-entrar-cancelar" class="btn btn-link" data-texto="conta.cancelar"></button>
+          <button type="submit" class="btn btn-pagar" data-texto="conta.confirmar"></button>
+        </div>
+      </form>
     </div>
   </div>
 

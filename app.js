@@ -40,6 +40,17 @@
     document.title = t('aba') || document.title;
     for (const el of document.querySelectorAll('[data-texto]')) escrever(el, t(el.dataset.texto));
 
+    // título letra a letra, pro topo poder recolher até o "e."
+    const letras = Array.from(t('topo.titulo'));
+    $('marca').replaceChildren(...[...letras, '.'].map((letra, i) => {
+      const span = document.createElement('span');
+      span.className = 'letra' + (i === 0 ? ' inicial' : i === letras.length ? ' ponto' : '');
+      span.textContent = letra;
+      span.style.setProperty('--z', letras.length - i); // cada uma por trás da anterior
+      return span;
+    }));
+    $('titulo').setAttribute('aria-label', t('topo.titulo'));
+
     // sorteia um trocadilho pro topo a cada visita
     const opcoes = textos.topo?.trocadilhos || [];
     const sorteado = opcoes[Math.floor(Math.random() * opcoes.length)] || {};
@@ -69,9 +80,11 @@
       .replace(pontuacao ? /[^A-Za-z0-9 .,]/g : /[^A-Za-z0-9 ]/g, '')
       .toUpperCase().trim().slice(0, max);
 
-  // Ex.: "2KKAT 3LILI 1FINI D0.75" (os ids vêm do data.json)
-  function mensagemPix(itens, doacao) {
+  // Ex.: "C10.00 2KKAT 3LILI 1FINI D0.75" (os ids vêm do data.json; C = cupom, D = doação).
+  // O cupom vai na frente porque carrinho gigante é cortado no fim.
+  function mensagemPix(itens, doacao, cupom = 0) {
     const partes = itens.map((i) => (i.unidades ?? i.qtd) + i.id.toUpperCase());
+    if (cupom) partes.unshift('C' + (cupom / 100).toFixed(2));
     if (doacao) partes.push('D' + (doacao / 100).toFixed(2));
     return partes.join(' ');
   }
@@ -186,7 +199,6 @@
           <div class="emoji" aria-hidden="true"></div>
           <div class="info">
             <div class="nome"></div>
-            <div class="detalhe"></div>
             <div class="preco"></div>
           </div>
           <div class="qtd qtd-un">
@@ -196,17 +208,8 @@
           </div>`;
         icone(card.querySelector('.emoji'), p);
         card.querySelector('.nome').textContent = p.nome;
-        card.querySelector('.detalhe').textContent = p.detalhe || '';
         const preco = card.querySelector('.preco');
         escrever(preco, brl(centavosDe(p)));
-        // preço da Araujo riscado, só quando o nosso é mais barato
-        const araujo = Math.round((p.precoAraujo || 0) * 100);
-        if (!p.esgotado && araujo > centavosDe(p)) {
-          const span = document.createElement('span');
-          span.className = 'preco-araujo';
-          escrever(span, t('catalogo.precoAraujo', { preco: brl(araujo) }));
-          preco.prepend(span, ' ');
-        }
         if (p.esgotado) {
           // continua na lista, mas cinza e sem os botões
           card.classList.add('esgotado');
@@ -228,13 +231,13 @@
     atualizar();
   }
 
-  // linha "🍫 R$ 4,00 cada ×3" com −/+ de kit em kit
+  // linha "🍫 R$ 4,00 / cada ×3" (o "cada ×3" embaixo do preço) com −/+ de kit em kit
   function linhaKit(p) {
     const linha = document.createElement('div');
     linha.className = 'kit';
     linha.innerHTML = `
       <span class="kit-icone" aria-hidden="true"><span class="kit-emoji"></span></span>
-      <span class="kit-preco"><span class="kit-valor"></span> <span class="kit-qtd"></span></span>
+      <span class="kit-preco"><span class="kit-valor"></span><span class="kit-qtd"></span></span>
       <div class="qtd qtd-kit">
         <button class="menos" aria-label="Remover um kit">−</button>
         <span class="n">0</span>
@@ -299,7 +302,11 @@
     try { localStorage.setItem(CHAVE_SEM_DOACAO, '1'); } catch { /* modo privado etc. */ }
   };
 
+  let pixAtual = null;    // { itens, doacao, cupom } do Pix na tela
+  let usarCupom = null;   // escolha do checkbox; null = ainda não decidiu (usa o padrão)
+
   function abrirPagamento() {
+    usarCupom = null;
     const itens = itensNoCarrinho();
     const subtotal = itens.reduce((s, i) => s + i.subtotal, 0);
     if (!subtotal) return;
@@ -340,7 +347,20 @@
   }
 
   function mostrarPix(itens, doacao) {
-    const total = itens.reduce((s, i) => s + i.subtotal, 0) + doacao;
+    const bruto = itens.reduce((s, i) => s + i.subtotal, 0) + doacao;
+
+    // cupom do cashback: desconta até o valor dele, mas o Pix fica com pelo menos R$ 0,01.
+    // Vem marcado só se a compra for maior que o cupom (pra não gastar à toa)
+    const cb = cashback();
+    $('pix-cupom').hidden = !cb?.disponivel;
+    if (cb?.disponivel && usarCupom === null) usarCupom = bruto >= cb.cupom;
+    const cupom = cb?.disponivel && usarCupom ? Math.min(cb.cupom, bruto - 1) : 0;
+    if (cb?.disponivel) {
+      $('pix-cupom-usar').checked = usarCupom;
+      escrever($('pix-cupom-texto'), t('cashback.usar', { cupom: brl(cb.cupom) }));
+    }
+    const total = bruto - cupom;
+    pixAtual = { itens, doacao, cupom };
 
     const resumo = $('pix-resumo');
     resumo.innerHTML = '';
@@ -354,9 +374,10 @@
       const texto = t('doacao.linhaResumo', { emoji: d.emoji || '🐳', nome: d.nome });
       resumo.appendChild(linhaResumo(texto, doacao, 'doacao'));
     }
+    if (cupom) resumo.appendChild(linhaResumo(t('cashback.linhaResumo'), -cupom, 'cupom'));
     escrever($('pix-total'), brl(total));
 
-    const codigo = pixPayload(dados.pix, total, mensagemPix(itens, doacao));
+    const codigo = pixPayload(dados.pix, total, mensagemPix(itens, doacao, cupom));
     $('pix-codigo').value = codigo;
 
     const qr = qrcode(0, 'M');
@@ -388,6 +409,10 @@
 
   // Se comprou algo que fica na geladeira, mostra o lembrete de repor no lugar do obrigado
   function paguei() {
+    if (pixAtual?.cupom) {
+      marcarCupomUsado();
+      renderCashback();
+    }
     const bebidas = itensNoCarrinho()
       .filter((i) => i.geladeira)
       .map((i) => (i.unidades > 1 ? `${i.unidades} ${i.nome}` : i.nome));
@@ -436,12 +461,276 @@
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderTema);
   renderTema();
 
+  // ---------- Conta ----------
+  // E-mail @fitenergia.com.br guardado só na sessão (fecha a aba, sai)
+
+  const DOMINIO = '@fitenergia.com.br';
+  const CHAVE_EMAIL = 'engordando:email';
+  let emailSemStorage = ''; // se o navegador bloquear o sessionStorage, vale até recarregar
+  const lerEmail = () => {
+    try { return sessionStorage.getItem(CHAVE_EMAIL) || ''; } catch { return emailSemStorage; }
+  };
+  const salvarEmail = (email) => {
+    emailSemStorage = email;
+    try {
+      if (email) sessionStorage.setItem(CHAVE_EMAIL, email);
+      else sessionStorage.removeItem(CHAVE_EMAIL);
+    } catch { /* modo privado etc. */ }
+  };
+
+  const svg = (d) =>
+    `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+  const ICONE_ENTRAR = svg('<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>');
+  const ICONE_SAIR = svg('<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>');
+
+  function renderConta() {
+    const email = lerEmail();
+    const rotulo = t(email ? 'conta.sair' : 'conta.entrar');
+    for (const btn of document.querySelectorAll('.btn-conta')) {
+      btn.innerHTML = (email ? ICONE_SAIR : ICONE_ENTRAR) + '<span class="rotulo"></span>';
+      escrever(btn.querySelector('.rotulo'), rotulo);
+      btn.setAttribute('aria-label', email ? `${rotulo} (${email})` : rotulo);
+      btn.title = email;
+    }
+    minhasCompras = null;
+    renderCashback();
+    if (email) carregarHistorico().then(renderCashback, () => {}); // pro banner e o cupom do Pix
+  }
+
+  // automatico: aberto sozinho ao entrar na página; no celular não foca o campo
+  // (senão o teclado sobe de cara)
+  function abrirEntrar({ automatico = false } = {}) {
+    $('entrar-email').value = '';
+    $('entrar-email').placeholder = t('conta.placeholder');
+    $('entrar-sufixo').textContent = DOMINIO;
+    $('entrar-erro').hidden = true;
+    $('modal-entrar').hidden = false;
+    if (!automatico || !matchMedia('(pointer: coarse)').matches) $('entrar-email').focus();
+  }
+
+  // Quem fechou o login não é perguntado de novo na mesma sessão
+  const CHAVE_PULOU = 'engordando:pulouLogin';
+  const fecharEntrar = () => {
+    $('modal-entrar').hidden = true;
+    try { sessionStorage.setItem(CHAVE_PULOU, '1'); } catch { /* sem storage */ }
+  };
+  const pediuLogin = () => {
+    try { return sessionStorage.getItem(CHAVE_PULOU) === '1'; } catch { return false; }
+  };
+
+  // Campo só com o usuário ("rafael.solli"); se colarem o e-mail inteiro, tira o domínio
+  const usuarioDe = (texto) => {
+    const v = texto.trim().toLowerCase();
+    return v.endsWith(DOMINIO) ? v.slice(0, -DOMINIO.length) : v;
+  };
+
+  function entrar(e) {
+    e.preventDefault();
+    const usuario = usuarioDe($('entrar-email').value);
+    if (!/^[a-z0-9._%+-]+$/.test(usuario)) {
+      $('entrar-erro').hidden = false;
+      $('entrar-email').focus();
+      return;
+    }
+    salvarEmail(usuario + DOMINIO);
+    fecharEntrar();
+    renderConta();
+  }
+
+  function clicarConta() {
+    if (!lerEmail()) return abrirEntrar();
+    salvarEmail('');
+    renderConta();
+  }
+
+  for (const btn of document.querySelectorAll('.btn-conta')) btn.addEventListener('click', clicarConta);
+  $('form-entrar').addEventListener('submit', entrar);
+  $('entrar-email').addEventListener('input', (e) => {
+    $('entrar-erro').hidden = true;
+    if (e.target.value.toLowerCase().includes(DOMINIO)) e.target.value = usuarioDe(e.target.value);
+  });
+  $('btn-entrar-cancelar').addEventListener('click', fecharEntrar);
+  $('modal-entrar').addEventListener('click', (e) => {
+    if (e.target.id === 'modal-entrar') fecharEntrar();
+  });
+  $('modal-entrar').addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fecharEntrar();
+  });
+
+  // ---------- Histórico ----------
+  // historico.json: { "compras": [{ "email", "data" (ISO com fuso), "valor", "cupom"? }] }.
+  // Não aparece pra ninguém: só alimenta o cashback.
+
+  const FUSO = 'America/Sao_Paulo';
+  let minhasCompras = null; // compras do e-mail logado
+
+  async function carregarHistorico() {
+    const email = lerEmail();
+    const { compras = [] } = await carregar('historico.json');
+    if (lerEmail() !== email) return; // trocou de conta no meio do caminho
+    minhasCompras = compras.filter((c) => String(c.email).toLowerCase() === email && !isNaN(new Date(c.data)));
+  }
+
+  // ---------- Cashback ----------
+  // Gastou a "meta" no mês (horário de Brasília) → cupom de "cupom" pra usar uma vez, no mesmo mês.
+  // Usado = marcado no navegador (ao clicar em "Paguei") ou "cupom": true numa compra do historico.json.
+
+  const mesDe = (data) => new Date(data).toLocaleDateString('en-CA', { timeZone: FUSO }).slice(0, 7); // "2026-10"
+  const nomeDoMes = (mes) =>
+    new Date(mes + '-15T12:00:00Z').toLocaleDateString('pt-BR', { month: 'long', timeZone: 'UTC' });
+  const ultimoDia = (mes) => {
+    const [ano, m] = mes.split('-').map(Number);
+    return `${new Date(Date.UTC(ano, m, 0)).getUTCDate()}/${String(m).padStart(2, '0')}`;
+  };
+
+  const chaveCupom = () => 'engordando:cupom:' + lerEmail();
+  const marcarCupomUsado = () => {
+    try { localStorage.setItem(chaveCupom(), mesDe(Date.now())); } catch { /* sem storage */ }
+  };
+  const cupomUsadoAqui = (mes) => {
+    try { return localStorage.getItem(chaveCupom()) === mes; } catch { return false; }
+  };
+
+  function cashback() {
+    const cfg = dados.cashback;
+    if (!cfg || !lerEmail() || !minhasCompras) return null;
+    const mes = mesDe(Date.now());
+    const doMes = minhasCompras.filter((c) => mesDe(c.data) === mes);
+    const gasto = doMes.reduce((s, c) => s + Math.round(c.valor * 100), 0);
+    const meta = Math.round(cfg.meta * 100);
+    const cupom = Math.round(cfg.cupom * 100);
+    const atingiu = gasto >= meta;
+    const usado = doMes.some((c) => c.cupom) || cupomUsadoAqui(mes);
+    return { mes, gasto, meta, cupom, atingiu, usado, disponivel: atingiu && !usado };
+  }
+
+  // Banner acima do WhatsApp: logado mostra a barrinha do mês; sem login, convida pra entrar
+  function renderCashback() {
+    const banner = $('banner-cashback');
+    const cfg = dados?.cashback;
+    const email = lerEmail();
+    const cb = cashback();
+    banner.hidden = !cfg || (email && !cb); // logado: espera o historico.json carregar
+    if (banner.hidden) return;
+
+    const convite = !email;
+    banner.classList.toggle('clicavel', convite);
+    banner.tabIndex = convite ? 0 : -1;
+    banner.setAttribute('role', convite ? 'button' : 'region');
+    $('cashback-seta').hidden = !convite;
+    $('cashback-barra').hidden = convite;
+
+    if (convite) {
+      const vars = { meta: brl(Math.round(cfg.meta * 100)), cupom: brl(Math.round(cfg.cupom * 100)) };
+      escrever($('cashback-emoji'), t('cashback.emoji'));
+      escrever($('cashback-titulo'), t('cashback.conviteTitulo', vars));
+      escrever($('cashback-texto'), t('cashback.conviteTexto', vars));
+      return;
+    }
+    const vars = {
+      falta: brl(cb.meta - cb.gasto), cupom: brl(cb.cupom), gasto: brl(cb.gasto), meta: brl(cb.meta),
+      mes: nomeDoMes(cb.mes), ate: ultimoDia(cb.mes),
+    };
+    const estado = !cb.atingiu ? 'falta' : cb.usado ? 'usado' : 'liberado';
+    escrever($('cashback-emoji'), t(estado === 'liberado' ? 'cashback.emojiLiberado' : 'cashback.emoji'));
+    escrever($('cashback-titulo'), t('cashback.' + estado, vars));
+    escrever($('cashback-texto'), estado === 'falta' ? t('cashback.detalhe', vars) : t(`cashback.${estado}Texto`, vars));
+    $('cashback-preenchido').style.width = Math.min(100, (cb.gasto / cb.meta) * 100) + '%';
+    banner.classList.toggle('completo', cb.atingiu);
+  }
+
+  $('banner-cashback').addEventListener('click', () => { if (!lerEmail()) abrirEntrar(); });
+  $('banner-cashback').addEventListener('keydown', (e) => {
+    if (!lerEmail() && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrirEntrar(); }
+  });
+
+  // ---------- Topo que encolhe ----------
+  // Mede o topo cheio uma vez (e de novo se a tela/fonte mudar). Na rolagem da lista só atualiza
+  // --p (0 = cheio, 1 = reduzido); o resto é calc() no CSS.
+
+  const raiz = document.documentElement;
+  const TAMANHO_E = 30; // px do "e." no topo reduzido
+  let alturaCheia = 0;
+  let alturaMini = 56;
+
+  function medirTopo() {
+    const topo = $('topo');
+    raiz.style.setProperty('--p', 0);
+    topo.style.height = 'auto';
+    alturaCheia = topo.offsetHeight;
+    topo.style.height = '';
+    alturaMini = parseFloat(getComputedStyle(topo).getPropertyValue('--h-mini')) || 56;
+
+    const marca = $('marca');
+    marca.style.transform = 'none';
+    const caixa = topo.getBoundingClientRect();
+    const m = marca.getBoundingClientRect();
+    marca.style.transform = '';
+    const fonte = parseFloat(getComputedStyle($('titulo')).fontSize);
+    const s = TAMANHO_E / fonte;
+    const seguro = alturaMini - 56; // entalhe do iPhone
+
+    raiz.style.setProperty('--h-cheia', alturaCheia + 'px');
+    raiz.style.setProperty('--h-rodape', $('barra').offsetHeight + 'px');
+    topo.style.setProperty('--x0', (caixa.width - m.width) / 2 - (m.left - caixa.left) + 'px'); // centro
+    topo.style.setProperty('--x1', 20 - (m.left - caixa.left) + 'px'); // 20px da borda
+    topo.style.setProperty('--dy', seguro + (56 - m.height * s) / 2 - (m.top - caixa.top) + 'px');
+    topo.style.setProperty('--s', s);
+
+    // quanto cada letra anda pra ficar atrás do "e" (o ponto para logo depois dele)
+    const spans = [...marca.children];
+    const [inicial] = spans;
+    const ATRASO_MAX = 0.4;
+    const n = spans.length - 2; // letras entre o "e" e o "."
+    topo.style.setProperty('--atraso-max', ATRASO_MAX);
+    spans.forEach((span, i) => {
+      if (!i) return;
+      const ponto = i === spans.length - 1;
+      const alvo = ponto ? inicial.offsetLeft + inicial.offsetWidth : inicial.offsetLeft;
+      span.style.setProperty('--dx', alvo - span.offsetLeft + 'px');
+      span.style.setProperty('--atraso', (ATRASO_MAX * (Math.min(i, n) - 1)) / Math.max(1, n - 1));
+    });
+    rolarTopo();
+  }
+
+  function rolarTopo() {
+    const lista = $('rolagem');
+    const faixa = alturaCheia - alturaMini; // rolagem que só encolhe o topo
+    const p = Math.min(1, Math.max(0, lista.scrollTop / Math.max(1, faixa)));
+    raiz.style.setProperty('--p', p.toFixed(4)); // na raiz: o topo e o recorte da lista usam
+
+    // setinhas: tem item escondido acima (depois do topo já reduzido) ou abaixo?
+    $('seta-cima').classList.toggle('visivel', lista.scrollTop > faixa + 8);
+    $('seta-baixo').classList.toggle('visivel', lista.scrollTop + lista.clientHeight < lista.scrollHeight - 8);
+  }
+
+  const pular = (sentido) => () =>
+    $('rolagem').scrollBy({ top: sentido * $('rolagem').clientHeight * 0.7, behavior: 'smooth' });
+  $('seta-cima').addEventListener('click', pular(-1));
+  $('seta-baixo').addEventListener('click', pular(+1));
+  // lista muda de altura (fotos carregando, banner aparecendo): reavalia as setinhas
+  const observador = new ResizeObserver(() => rolarTopo());
+  observador.observe($('catalogo'));
+  observador.observe($('banner'));
+  observador.observe($('banner-cashback'));
+
+  let quadro = 0;
+  $('rolagem').addEventListener('scroll', () => {
+    if (!quadro) quadro = requestAnimationFrame(() => { quadro = 0; rolarTopo(); });
+  }, { passive: true });
+  addEventListener('resize', medirTopo);
+  document.fonts?.ready.then(medirTopo);
+
   // ---------- Init ----------
 
   $('btn-pagar').addEventListener('click', abrirPagamento);
   $('btn-voltar').addEventListener('click', fecharModal);
   $('btn-fechar').addEventListener('click', fecharModal);
   $('btn-copiar').addEventListener('click', copiar);
+  $('pix-cupom-usar').addEventListener('change', (e) => {
+    usarCupom = e.target.checked;
+    mostrarPix(pixAtual.itens, pixAtual.doacao); // refaz total e QR
+  });
   $('btn-paguei').addEventListener('click', paguei);
   $('modal-pix').addEventListener('click', (e) => {
     if (e.target.id === 'modal-pix') fecharModal();
@@ -458,6 +747,9 @@
       dados = d;
       textos = txt;
       aplicarTextos();
+      medirTopo();
+      renderConta();
+      if (!lerEmail() && !pediuLogin()) abrirEntrar({ automatico: true });
       renderCatalogo();
       montarBanner();
     })

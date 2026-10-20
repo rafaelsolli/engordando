@@ -11,11 +11,34 @@
       }
     ]
   },
+  "conta": {
+    "entrar": "entrar",
+    "sair": "sair",
+    "titulo": "entrar",
+    "dica": "foi aqui que pediram ✨**cartãozinho de fidelidade**✨??",
+    "placeholder": "nome.sobrenome",
+    "erro": "e-mail inválido!",
+    "cancelar": "cancelar",
+    "confirmar": "entrar"
+  },
+  "cashback": {
+    "emoji": "✨",
+    "emojiLiberado": "🎉",
+    "conviteTitulo": "cashback na vendinha!",
+    "conviteTexto": "juntando {meta} em compras no mês, cê ganha um cupom de {cupom}! mas tem que entrar aqui pra participar!",
+    "falta": "faltam {falta} pro seu cuponzito de {cupom}",
+    "liberado": "cupom de {cupom} liberado!! bora ostentar",
+    "liberadoTexto": "o desconto vai aparecer na hora do PIX, confia! válido até {ate}",
+    "usado": "cupom de {mes} usado ✅",
+    "usadoTexto": "mês que vem tem mais!",
+    "detalhe": "{gasto} de {meta} em {mes}",
+    "usar": "usar meu cupom de {cupom} ✨",
+    "linhaResumo": "✨ cashback"
+  },
   "catalogo": {
-    "precoAraujo": "~~{preco}~~",
     "esgotado": "esgotado!",
-    "kit": "×{qtd}",
-    "kitPreco": "{preco} cada"
+    "kit": "cada ×{qtd}",
+    "kitPreco": "{preco}"
   },
   "barra": {
     "nenhumItem": "nenhum item",
@@ -51,7 +74,7 @@
   "obrigado": {
     "emoji": "🙌",
     "titulo": "Valeu demais!!",
-    "texto": "Pode pegar as bobagenzinhas lá e ser feliz. Se tiver acabado algum item, **não esquece de me avisar**!",
+    "texto": "Pode pegar as bobagenzinhas lá e ser feliz. Já já eu confirmo sua compra, ok? Se tiver acabado algum item, **não esquece de me avisar**!",
     "fechar": "Fechar"
   },
   "obrigadoGeladeira": {

@@ -18,6 +18,10 @@
     "emoji": "🫍",
     "valor": 0.1
   },
+  "cashback": {
+    "meta": 100,
+    "cupom": 10
+  },
   "contato": {
     "whatsapp": "5531998841993"
   },
@@ -25,7 +29,6 @@
     {
       "id": "COCA",
       "nome": "Coca-Cola",
-      "detalhe": "350ml",
       "emoji": "🥤",
       "imagem": "img/produtos/coca.png",
       "categoria": "Bebidas",
@@ -33,7 +36,6 @@
       "esgotado": false,
       "kit": false,
       "geladeira": true,
-      "precoAraujo": 4.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -45,7 +47,6 @@
     {
       "id": "ZERO",
       "nome": "Coca-Cola Zero",
-      "detalhe": "350ml",
       "emoji": "🥤",
       "imagem": "img/produtos/zero.png",
       "categoria": "Bebidas",
@@ -53,7 +54,6 @@
       "esgotado": false,
       "kit": false,
       "geladeira": true,
-      "precoAraujo": 4.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -65,7 +65,6 @@
     {
       "id": "MONSTER",
       "nome": "Monster Zero",
-      "detalhe": "473ml",
       "emoji": "⚡",
       "imagem": "img/produtos/monster.png",
       "categoria": "Bebidas",
@@ -73,7 +72,6 @@
       "esgotado": false,
       "kit": false,
       "geladeira": true,
-      "precoAraujo": 9.89,
       "compras": [
         {
           "data": "2026-10-10",
@@ -85,14 +83,12 @@
     {
       "id": "KITKAT",
       "nome": "Kit Kat",
-      "detalhe": "42g",
       "emoji": "🍫",
       "imagem": "img/produtos/kitkat.png",
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
       "kit": true,
-      "precoAraujo": 4.29,
       "compras": [
         {
           "data": "2026-10-10",
@@ -104,14 +100,12 @@
     {
       "id": "SNIKER",
       "nome": "Snickers",
-      "detalhe": "45g",
       "emoji": "🥜",
       "imagem": "img/produtos/snickers.png",
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
       "kit": true,
-      "precoAraujo": 4.69,
       "compras": [
         {
           "data": "2026-10-10",
@@ -123,14 +117,12 @@
     {
       "id": "TRENTO",
       "nome": "Trento",
-      "detalhe": "29g",
       "emoji": "🧇",
       "imagem": "img/produtos/trento.png",
       "categoria": "Chocolates",
       "ativo": true,
       "esgotado": false,
       "kit": true,
-      "precoAraujo": 3.59,
       "compras": [
         {
           "data": "2026-10-10",
@@ -142,14 +134,12 @@
     {
       "id": "TRIDENT",
       "nome": "Trident",
-      "detalhe": "hortelã 8g",
       "emoji": "🌿",
       "imagem": "img/produtos/trident.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": true,
-      "precoAraujo": 3.49,
       "compras": [
         {
           "data": "2026-10-10",
@@ -161,14 +151,12 @@
     {
       "id": "FINI",
       "nome": "Fini",
-      "detalhe": "tubo 15g",
       "emoji": "🍬",
       "imagem": "img/produtos/fini.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": false,
-      "precoAraujo": null,
       "compras": [
         {
           "data": "2026-10-10",
@@ -180,14 +168,12 @@
     {
       "id": "POP",
       "nome": "Pirulito Pop",
-      "detalhe": "cereja",
       "emoji": "🍭",
       "imagem": "img/produtos/pop.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": false,
-      "precoAraujo": null,
       "compras": [
         {
           "data": "2026-10-10",
@@ -199,14 +185,12 @@
     {
       "id": "LILITH",
       "nome": "Bala Lilith",
-      "detalhe": "maçã verde",
       "emoji": "🍏",
       "imagem": "img/produtos/lilith.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": false,
-      "precoAraujo": null,
       "compras": [
         {
           "data": "2026-10-10",
@@ -218,14 +202,12 @@
     {
       "id": "CHITA",
       "nome": "Bala Chita",
-      "detalhe": "abacaxi",
       "emoji": "🍍",
       "imagem": "img/produtos/chita.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": false,
-      "precoAraujo": null,
       "compras": [
         {
           "data": "2026-10-10",
@@ -237,14 +219,12 @@
     {
       "id": "PACOCA",
       "nome": "Paçoquinha",
-      "detalhe": "amendoim",
       "emoji": "🥜",
       "imagem": "img/produtos/pacoca.png",
       "categoria": "Balas & cia",
       "ativo": true,
       "esgotado": false,
       "kit": true,
-      "precoAraujo": null,
       "compras": [
         {
           "data": "2026-10-19",

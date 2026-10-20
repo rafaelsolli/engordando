@@ -49,7 +49,7 @@ body {
   font-family: "DM Sans", system-ui, sans-serif;
   background: var(--fundo);
   color: var(--texto);
-  padding-bottom: calc(150px + env(safe-area-inset-bottom)); /* espaço pro rodapé e o botão de tema */
+  overflow: hidden; /* quem rola é a .rolagem */
 }
 
 h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
@@ -63,17 +63,129 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
   color: #fff;
   padding: 36px 16px 32px;
   text-align: center;
-  border-radius: 0 0 28px 28px;
+  /* fixo no topo e encolhendo com a rolagem: --p vai de 0 (cheio) a 1 (reduzido).
+     As medidas (--h-cheia, --x0, --x1, --dy, --s e o --dx de cada letra) vêm do app.js */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 6;
+  height: calc(var(--h-cheia, auto) - (var(--h-cheia, 0px) - var(--h-mini)) * var(--p, 0));
+  overflow: hidden;
+  border-radius: 0 0 calc(28px - 8px * var(--p, 0)) calc(28px - 8px * var(--p, 0));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, calc(.2 * var(--p, 0)));
 }
+:root { --h-mini: calc(56px + env(safe-area-inset-top)); }
+/* área da lista: da borda de cima (por baixo do topo) até o rodapé (--h-rodape vem do app.js) */
+.rolagem {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  bottom: var(--h-rodape, calc(72px + env(safe-area-inset-bottom)));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-top: var(--h-cheia, 0px); /* começa abaixo do topo cheio */
+  padding-bottom: 72px; /* o botão de tema não cobre o fim da lista */
+  /* nada da lista aparece atrás do topo: corta na altura atual dele */
+  clip-path: inset(calc(var(--h-cheia, 0px) - (var(--h-cheia, 0px) - var(--h-mini)) * var(--p, 0)) 0 0 0);
+  scrollbar-width: none; /* sem barra de rolagem: as setinhas avisam */
+}
+.rolagem::-webkit-scrollbar { display: none; }
+
+/* setinhas flutuantes: aparecem quando tem lista escondida pra cima/baixo */
+.seta {
+  position: fixed;
+  left: 50%;
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 2px solid var(--borda);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--azul-texto);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.seta.visivel { opacity: .92; pointer-events: auto; }
+.seta-cima { top: calc(var(--h-cheia, 0px) - (var(--h-cheia, 0px) - var(--h-mini)) * var(--p, 0) + 16px); }
+.seta-baixo { bottom: calc(var(--h-rodape, 72px) + 8px); }
+/* as duas quicam pro lado que aponta */
+.seta-baixo.visivel { animation: quica-baixo 1.6s ease-in-out infinite; }
+.seta-cima.visivel { animation: quica-cima 1.6s ease-in-out infinite; }
+@keyframes quica-baixo { 50% { transform: translate(-50%, 4px); } }
+@keyframes quica-cima { 50% { transform: translate(-50%, -4px); } }
+@media (prefers-reduced-motion: reduce) { .seta.visivel { animation: none; } }
 .topo h1 {
   margin: 0;
+  text-align: left; /* a posição da marca é toda pelo transform */
+  white-space: nowrap;
   font-size: clamp(2.6rem, 11vw, 4rem);
   font-weight: 800;
   letter-spacing: -.03em;
   line-height: 1;
 }
 .topo .ponto { color: var(--verde); }
+.marca {
+  display: inline-block;
+  transform-origin: 0 0;
+  transform:
+    translate(calc(var(--x0, 0px) + (var(--x1, 0px) - var(--x0, 0px)) * var(--p, 0)), calc(var(--dy, 0px) * var(--p, 0)))
+    scale(calc(1 - (1 - var(--s, 1)) * var(--p, 0)));
+}
+/* cada letra depois do "e" desliza até ficar atrás dele, sumindo. As mais perto do "e"
+   saem primeiro (--atraso); o "." vai junto com a última e para colado no "e" */
+.marca .letra {
+  --q: clamp(0, (var(--p, 0) - var(--atraso, 0)) / (1 - var(--atraso-max, 0)), 1);
+  position: relative;
+  z-index: var(--z, 0);
+  display: inline-block;
+  transform: translateX(calc(var(--dx, 0px) * var(--q)));
+}
+.marca .letra:not(.ponto, .inicial) { opacity: calc(1 - var(--q)); }
+.topo-antes, .topo-riscado { opacity: calc(1 - 4 * var(--p, 0)); }
 .topo p { margin: 10px 0 0; color: #B9D3E8; font-size: .95rem; }
+
+/* Entrar/sair: no topo grande com o texto, no reduzido só o ícone */
+.btn-conta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  font: 700 .9rem "DM Sans", sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-conta:hover { background: rgba(255, 255, 255, .2); }
+.btn-conta:active { transform: scale(.94); }
+/* no topo reduzido fica só o ícone, centralizado na altura */
+.topo .btn-conta {
+  position: absolute;
+  top: calc(12px - 4px * var(--p, 0) + env(safe-area-inset-top) * var(--p, 0));
+  right: 12px;
+  gap: calc(6px * (1 - var(--p, 0)));
+  padding: 0 calc(14px - 4px * var(--p, 0));
+}
+.topo .btn-conta .rotulo {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: calc(4em * (1 - var(--p, 0)));
+  opacity: calc(1 - 2 * var(--p, 0));
+}
+/* em tela estreita o texto encostaria no título: fica só o ícone */
+@media (max-width: 420px) {
+  .topo .btn-conta { width: 40px; padding: 0; gap: 0; justify-content: center; }
+  .topo .btn-conta .rotulo { display: none; }
+}
 
 /* trocadilho com o embrasando: frase antes do título e/ou palavra riscada */
 .topo .topo-antes {
@@ -159,19 +271,11 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 .produto .emoji img { width: 52px; height: 52px; object-fit: contain; }
 .produto .info { flex: 1; min-width: 0; }
 .produto .nome { font-weight: 700; font-size: 1rem; }
-.produto .detalhe { color: var(--muted); font-size: .85rem; }
 .produto .preco {
   font-family: "Outfit", sans-serif;
   font-weight: 700;
   color: var(--azul-texto);
   margin-top: 2px;
-}
-
-.produto .preco-araujo {
-  font-family: "DM Sans", sans-serif;
-  font-weight: 500;
-  font-size: .8rem;
-  color: var(--muted);
 }
 
 /* sem estoque: card cinza, sem botões */
@@ -206,11 +310,15 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
 .kit-emoji img { width: 28px; height: 28px; object-fit: contain; vertical-align: middle; }
 .kit-preco {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   font-family: "Outfit", sans-serif;
   font-weight: 700;
   color: var(--verde);
-  white-space: nowrap;
+  line-height: 1.15;
 }
+.kit-qtd { font-size: .8rem; } /* "cada ×3" embaixo do preço */
 .qtd-kit button { width: 32px; height: 32px; font-size: 1.15rem; }
 
 .qtd { display: flex; align-items: center; gap: 6px; flex: none; }
@@ -404,6 +512,61 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
   background: var(--fundo);
   color: var(--texto);
 }
+/* banner do cashback, acima do do WhatsApp */
+.banner-cashback + .banner { margin-top: 12px; }
+.banner-cashback.clicavel { cursor: pointer; }
+.banner-cashback.clicavel:active { transform: scale(.98); }
+.banner-cashback.clicavel:focus-visible { outline: 3px solid var(--destaque); outline-offset: 2px; }
+.banner-cashback .banner-seta[hidden], .progresso-barra[hidden] { display: none; }
+.banner-cashback.completo h3 { color: #5CE65C; }
+.progresso-barra {
+  height: 10px;
+  margin: 8px 0 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .15);
+  overflow: hidden;
+}
+.progresso-barra span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--destaque), var(--verde));
+  transition: width .6s ease;
+}
+.resumo li.cupom span:last-child { color: var(--verde); font-weight: 700; }
+.cupom-opcao[hidden] { display: none; }
+.cupom-opcao { margin: 10px 0 0; color: var(--texto); font-weight: 500; }
+
+/* modal de entrar */
+.campo {
+  text-transform: none; /* e-mail como a pessoa digita */
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--borda);
+  border-radius: 12px;
+  font: 1rem "DM Sans", sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+}
+.campo:focus, .campo:focus-within { outline: none; border-color: var(--primaria); }
+.campo::placeholder, .campo ::placeholder { color: var(--muted); }
+/* usuário + "@fitenergia.com.br" fixo, numa caixa só */
+.campo-email { display: flex; align-items: baseline; cursor: text; }
+.campo-email input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-transform: none;
+}
+.campo-email .sufixo { flex: none; color: var(--muted); }
+.erro-campo { color: var(--vermelho); font-size: .85rem; margin: 8px 0 0; }
+
 .modal-caixa .copia .btn { width: auto; margin-top: 0; }
 
 .nao-perguntar {
