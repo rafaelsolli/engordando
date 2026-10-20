@@ -721,7 +721,18 @@
       span.style.setProperty('--dx', alvo - span.offsetLeft + 'px');
       span.style.setProperty('--atraso', (ATRASO_MAX * (Math.min(i, n) - 1)) / Math.max(1, n - 1));
     });
+    ajustarFolga();
     rolarTopo();
+  }
+
+  // Se a lista rola, mas menos do que o topo precisa pra recolher, o título travaria no meio
+  // (letras embaralhadas). Completa com uma folga no fim; se cabe tudo na tela, não rola e fica 0.
+  function ajustarFolga() {
+    const lista = $('rolagem');
+    const folga = $('rolagem-folga');
+    const sobra = lista.scrollHeight - folga.offsetHeight - lista.clientHeight;
+    const faixa = alturaCheia - alturaMini;
+    folga.style.height = sobra > 0 && sobra < faixa ? faixa - sobra + 'px' : '0px';
   }
 
   function rolarTopo() {
@@ -739,8 +750,8 @@
     $('rolagem').scrollBy({ top: sentido * $('rolagem').clientHeight * 0.7, behavior: 'smooth' });
   $('seta-cima').addEventListener('click', pular(-1));
   $('seta-baixo').addEventListener('click', pular(+1));
-  // lista muda de altura (fotos carregando, banner aparecendo): reavalia as setinhas
-  const observador = new ResizeObserver(() => rolarTopo());
+  // lista muda de altura (fotos carregando, banner aparecendo): refaz a folga e as setinhas
+  const observador = new ResizeObserver(() => { ajustarFolga(); rolarTopo(); });
   observador.observe($('catalogo'));
   observador.observe($('banner'));
   observador.observe($('banner-cashback'));
