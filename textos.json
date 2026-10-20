@@ -71,6 +71,13 @@
     "voltar": "Voltar",
     "linhaKit": "{emoji} {qtd}× {nome} (kit)"
   },
+  "whatsapp": {
+    "cabecalho": "Paguei a vendinha! 🍫",
+    "linha": "{texto}: {valor}",
+    "total": "*Total: {total}*",
+    "quem": "{email}",
+    "codigo": "Código: {codigo}"
+  },
   "obrigado": {
     "emoji": "🙌",
     "titulo": "Valeu demais!!",

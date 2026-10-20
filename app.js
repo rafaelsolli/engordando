@@ -408,7 +408,38 @@
   const listar = (xs) => (xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' e ' + xs.at(-1));
 
   // Se comprou algo que fica na geladeira, mostra o lembrete de repor no lugar do obrigado
+  // Resumo da compra pro WhatsApp (a descrição do Pix se perde na maioria dos bancos)
+  const semMarcacao = (texto) => texto.replace(/\*\*|~~/g, '');
+  function mensagemPaguei() {
+    const { itens, doacao, cupom } = pixAtual;
+    const linha = (texto, centavos) =>
+      t('whatsapp.linha', { texto: semMarcacao(texto), valor: brl(centavos) });
+    const linhas = [t('whatsapp.cabecalho'), ''];
+    for (const i of itens) {
+      const vars = { emoji: i.emoji || '🍬', nome: i.nome };
+      if (i.qtd) linhas.push(linha(t('pix.linhaItem', { ...vars, qtd: i.qtd }), i.subtotalAvulso));
+      if (i.kits) linhas.push(linha(t('pix.linhaKit', { ...vars, qtd: i.unidadesKit }), i.subtotalKit));
+    }
+    if (doacao) {
+      const d = dados.doacao;
+      linhas.push(linha(t('doacao.linhaResumo', { emoji: d.emoji || '🐳', nome: d.nome }), doacao));
+    }
+    if (cupom) linhas.push(linha(t('cashback.linhaResumo'), -cupom));
+    const total = itens.reduce((s, i) => s + i.subtotal, 0) + doacao - cupom;
+    linhas.push('', t('whatsapp.total', { total: brl(total) }));
+    if (lerEmail()) linhas.push(t('whatsapp.quem', { email: lerEmail() }));
+    linhas.push(t('whatsapp.codigo', { codigo: mensagemPix(itens, doacao, cupom) }));
+    return linhas.join('\n');
+  }
+
+  const numeroWhatsapp = () => String(dados.contato?.whatsapp || '').replace(/\D/g, '');
+
   function paguei() {
+    // abre o WhatsApp com o resumo (no clique, pra não ser bloqueado); sem número, só agradece
+    const numero = numeroWhatsapp();
+    if (numero && pixAtual) {
+      window.open(`https://wa.me/${numero}?text=${encodeURIComponent(mensagemPaguei())}`, '_blank', 'noopener');
+    }
     if (pixAtual?.cupom) {
       marcarCupomUsado();
       renderCashback();
@@ -431,7 +462,7 @@
 
   // Link do WhatsApp com a mensagem pronta (só aparece se tiver número no data.json)
   function montarBanner() {
-    const numero = String(dados.contato?.whatsapp || '').replace(/\D/g, '');
+    const numero = numeroWhatsapp();
     if (!numero) return;
     const texto = encodeURIComponent(t('banner.mensagemPronta'));
     $('banner').href = `https://wa.me/${numero}?text=${texto}`;
