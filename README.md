@@ -24,7 +24,7 @@ Tudo fica em [`data.json`](data.json):
 
 ## Entrar
 
-O botão "entrar" no topo pede o e-mail da Fit: a pessoa digita só o usuário e o `@fitenergia.com.br` fica fixo no campo (se colar o e-mail inteiro, o domínio é tirado). Ele fica salvo só na sessão do navegador (`sessionStorage`): fechou a aba, sai. Com e-mail salvo, o botão vira "sair". Quem chega sem login já vê o pedido de entrar; se fechar, não é perguntado de novo até fechar a aba.
+O botão "entrar" no topo pede o e-mail da Fit: a pessoa digita só o usuário e o `@fitenergia.com.br` fica fixo no campo (se colar o e-mail inteiro, o domínio é tirado). Ele fica salvo no navegador (`localStorage`) até a pessoa clicar em "sair". Com e-mail salvo, o botão vira "sair". Quem chega sem login já vê o pedido de entrar; se fechar, não é perguntado de novo até fechar a aba.
 
 ## Cashback
 

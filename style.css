@@ -306,8 +306,13 @@ h1, h2, h3 { font-family: "Outfit", system-ui, sans-serif; }
   border-top: 1px dashed var(--borda);
 }
 .kit-icone { flex: none; width: 52px; text-align: center; } /* mesma largura do emoji do produto */
-.kit-emoji { font-size: 1.4rem; line-height: 1; }
-.kit-emoji img { width: 28px; height: 28px; object-fit: contain; vertical-align: middle; }
+.kit-emoji { display: inline-flex; align-items: center; font-size: 1.1rem; line-height: 1; }
+/* as unidades do kit empilhadas: cada uma um pouco à direita e por cima da anterior */
+.kit-unidade { display: block; }
+.kit-unidade + .kit-unidade { margin-left: -14px; }
+.kit-unidade:nth-child(2) { transform: translateY(-3px); }
+.kit-unidade:nth-child(3) { transform: translateY(-6px); }
+.kit-emoji img { display: block; width: 26px; height: 26px; object-fit: contain; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .25)); }
 .kit-preco {
   flex: 1;
   min-width: 0;

@@ -243,7 +243,13 @@
         <span class="n">0</span>
         <button class="mais" aria-label="Adicionar um kit">+</button>
       </div>`;
-    icone(linha.querySelector('.kit-emoji'), p);
+    // o item repetido (×3), um por cima do outro
+    for (let i = 0; i < tamanhoKit(); i++) {
+      const unidade = document.createElement('span');
+      unidade.className = 'kit-unidade';
+      icone(unidade, p);
+      linha.querySelector('.kit-emoji').appendChild(unidade);
+    }
     escrever(linha.querySelector('.kit-qtd'), t('catalogo.kit', { qtd: tamanhoKit() }));
     escrever(linha.querySelector('.kit-valor'), t('catalogo.kitPreco', { preco: brl(precoKitDe(p)) }));
     linha.querySelector('.menos').addEventListener('click', () => alterar(p.id, -1, true));
@@ -493,21 +499,27 @@
   renderTema();
 
   // ---------- Conta ----------
-  // E-mail @fitenergia.com.br guardado só na sessão (fecha a aba, sai)
+  // E-mail @fitenergia.com.br guardado no navegador até a pessoa clicar em "sair"
 
   const DOMINIO = '@fitenergia.com.br';
   const CHAVE_EMAIL = 'engordando:email';
-  let emailSemStorage = ''; // se o navegador bloquear o sessionStorage, vale até recarregar
+  let emailSemStorage = ''; // se o navegador bloquear o localStorage, vale até recarregar
   const lerEmail = () => {
-    try { return sessionStorage.getItem(CHAVE_EMAIL) || ''; } catch { return emailSemStorage; }
+    try { return localStorage.getItem(CHAVE_EMAIL) || ''; } catch { return emailSemStorage; }
   };
   const salvarEmail = (email) => {
     emailSemStorage = email;
     try {
-      if (email) sessionStorage.setItem(CHAVE_EMAIL, email);
-      else sessionStorage.removeItem(CHAVE_EMAIL);
+      if (email) localStorage.setItem(CHAVE_EMAIL, email);
+      else localStorage.removeItem(CHAVE_EMAIL);
     } catch { /* modo privado etc. */ }
   };
+  // quem entrou quando o e-mail ficava só na sessão continua logado
+  try {
+    const antigo = sessionStorage.getItem(CHAVE_EMAIL);
+    if (antigo && !lerEmail()) salvarEmail(antigo);
+    sessionStorage.removeItem(CHAVE_EMAIL);
+  } catch { /* sem storage */ }
 
   const svg = (d) =>
     `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
