@@ -19,7 +19,7 @@
     { "email": "alice.alves@fitenergia.com.br", "data": "2026-10-22T15:44:00-03:00", "valor": 1.25 },
     { "email": "ronan.lopes@fitenergia.com.br", "data": "2026-10-22T16:35:00-03:00", "valor": 4.50 },
     { "email": "alice.alves@fitenergia.com.br", "data": "2026-10-22T17:53:00-03:00", "valor": 4.25 },
-    { "email": "rafael.solli@fitenergia.com.br", "data": "2026-10-22T18:00:00-03:00", "valor": 8.35 },
+    { "email": "rafael.solli@fitenergia.com.br", "data": "2026-10-22T18:00:00-03:00", "valor": 8.50 },
     { "email": "vitor.trafani@fitenergia.com.br", "data": "2026-10-23T10:24:00-03:00", "valor": 4.50 },
     { "email": "silas.silva@fitenergia.com.br", "data": "2026-10-23T10:25:00-03:00", "valor": 13.50 }
   ]
