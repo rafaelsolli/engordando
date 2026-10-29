@@ -601,7 +601,8 @@
   });
 
   // ---------- Histórico ----------
-  // historico.json: { "compras": [{ "email", "data" ("2026-10-28" ou ISO com hora), "valor", "cupom"? }] }.
+  // historico.json: { "2026-10": { "email": [{ "data" ("2026-10-28" ou ISO com hora), "valor", "cupom"? }] } }
+  // (mês → e-mail → compras).
   // Não aparece pra ninguém: só alimenta o cashback.
 
   const FUSO = 'America/Sao_Paulo';
@@ -609,9 +610,14 @@
 
   async function carregarHistorico() {
     const email = lerEmail();
-    const { compras = [] } = await carregar('historico.json');
+    const historico = await carregar('historico.json');
     if (lerEmail() !== email) return; // trocou de conta no meio do caminho
-    minhasCompras = compras.filter((c) => String(c.email).toLowerCase() === email && !isNaN(dataDe(c)));
+    // junta as compras desse e-mail de todos os meses
+    minhasCompras = Object.values(historico)
+      .flatMap((porEmail) => Object.entries(porEmail))
+      .filter(([dono]) => dono.toLowerCase() === email)
+      .flatMap(([, compras]) => compras)
+      .filter((c) => !isNaN(dataDe(c)));
   }
 
   // ---------- Cashback ----------

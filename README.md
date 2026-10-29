@@ -38,14 +38,16 @@ As compras vêm de [`historico.json`](historico.json) (que ninguém vê na pági
 
 ```json
 {
-  "compras": [
-    { "email": "rafael.solli@fitenergia.com.br", "data": "2026-10-20", "valor": 8.50 },
-    { "email": "rafael.solli@fitenergia.com.br", "data": "2026-10-28", "valor": 0.01, "cupom": true }
-  ]
+  "2026-10": {
+    "rafael.solli@fitenergia.com.br": [
+      { "data": "2026-10-20", "valor": 8.50 },
+      { "data": "2026-10-28", "valor": 0.01, "cupom": true }
+    ]
+  }
 }
 ```
 
-`data` é só o dia (`"2026-10-28"`, horário de Brasília); pro cashback só importa o mês. Data com hora (ISO com fuso) também funciona. O arquivo é público como o resto do site.
+Agrupado por mês → e-mail (em ordem alfabética) → compras. `data` é só o dia (`"2026-10-28"`, horário de Brasília); pro cashback só importa o mês. Data com hora (ISO com fuso) também funciona. O arquivo é público como o resto do site.
 
 ## Editar textos
 
