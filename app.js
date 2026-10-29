@@ -601,7 +601,7 @@
   });
 
   // ---------- Histórico ----------
-  // historico.json: { "compras": [{ "email", "data" (ISO com fuso), "valor", "cupom"? }] }.
+  // historico.json: { "compras": [{ "email", "data" ("2026-10-28" ou ISO com hora), "valor", "cupom"? }] }.
   // Não aparece pra ninguém: só alimenta o cashback.
 
   const FUSO = 'America/Sao_Paulo';
@@ -611,13 +611,19 @@
     const email = lerEmail();
     const { compras = [] } = await carregar('historico.json');
     if (lerEmail() !== email) return; // trocou de conta no meio do caminho
-    minhasCompras = compras.filter((c) => String(c.email).toLowerCase() === email && !isNaN(new Date(c.data)));
+    minhasCompras = compras.filter((c) => String(c.email).toLowerCase() === email && !isNaN(dataDe(c)));
   }
 
   // ---------- Cashback ----------
   // Gastou a "meta" no mês (horário de Brasília) → cupom de "cupom" pra usar uma vez, no mesmo mês.
   // Usado = marcado no navegador (ao clicar em "Paguei") ou "cupom": true numa compra do historico.json.
 
+  // "data" pode vir só com o dia ("2026-10-28"): vira meio-dia em Brasília (sem isso o navegador lê
+  // meia-noite UTC, que aqui ainda é o dia anterior, e o dia 1º cairia no mês passado)
+  const dataDe = (compra) => {
+    const texto = String(compra.data);
+    return new Date(/^\d{4}-\d{2}-\d{2}$/.test(texto) ? texto + 'T12:00:00-03:00' : texto);
+  };
   const mesDe = (data) => new Date(data).toLocaleDateString('en-CA', { timeZone: FUSO }).slice(0, 7); // "2026-10"
   const nomeDoMes = (mes) =>
     new Date(mes + '-15T12:00:00Z').toLocaleDateString('pt-BR', { month: 'long', timeZone: 'UTC' });
@@ -638,7 +644,7 @@
     const cfg = dados.cashback;
     if (!cfg || !lerEmail() || !minhasCompras) return null;
     const mes = mesDe(Date.now());
-    const doMes = minhasCompras.filter((c) => mesDe(c.data) === mes);
+    const doMes = minhasCompras.filter((c) => mesDe(dataDe(c)) === mes);
     const gasto = doMes.reduce((s, c) => s + Math.round(c.valor * 100), 0);
     const meta = Math.round(cfg.meta * 100);
     const cupom = Math.round(cfg.cupom * 100);
