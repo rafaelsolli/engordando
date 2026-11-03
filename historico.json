@@ -6,7 +6,11 @@
       { "data": "2026-10-22", "valor": 4.25 },
       { "data": "2026-10-23", "valor": 3.00 },
       { "data": "2026-10-26", "valor": 4.25 },
-      { "data": "2026-10-28", "valor": 8.25 }
+      { "data": "2026-10-28", "valor": 8.25 },
+      { "data": "2026-10-29", "valor": 8.25 }
+    ],
+    "amanda.barros@fitenergia.com.br": [
+      { "data": "2026-10-30", "valor": 2.50 }
     ],
     "bianca.lopes@fitenergia.com.br": [
       { "data": "2026-10-22", "valor": 2.50 },
@@ -14,7 +18,8 @@
       { "data": "2026-10-27", "valor": 5.50 }
     ],
     "camila.fialho@fitenergia.com.br": [
-      { "data": "2026-10-21", "valor": 2.50 }
+      { "data": "2026-10-21", "valor": 2.50 },
+      { "data": "2026-10-30", "valor": 4.25 }
     ],
     "daniel.ferreira@fitenergia.com.br": [
       { "data": "2026-10-23", "valor": 8.25 }
@@ -24,7 +29,8 @@
     ],
     "fernando.costa@fitenergia.com.br": [
       { "data": "2026-10-19", "valor": 5.10 },
-      { "data": "2026-10-28", "valor": 0.85 }
+      { "data": "2026-10-28", "valor": 0.85 },
+      { "data": "2026-10-29", "valor": 3.50 }
     ],
     "jair.oliveira@fitenergia.com.br": [
       { "data": "2026-10-26", "valor": 4.10 },
@@ -70,14 +76,20 @@
       { "data": "2026-10-23", "valor": 4.50 },
       { "data": "2026-10-26", "valor": 20.75 },
       { "data": "2026-10-27", "valor": 4.25 },
-      { "data": "2026-10-28", "valor": 4.25 }
+      { "data": "2026-10-28", "valor": 4.25 },
+      { "data": "2026-10-29", "valor": 4.25 }
     ],
     "sergio.reis@fitenergia.com.br": [
-      { "data": "2026-10-22", "valor": 4.25 }
+      { "data": "2026-10-22", "valor": 4.25 },
+      { "data": "2026-10-29", "valor": 4.00 },
+      { "data": "2026-10-29", "valor": 4.25 }
     ],
     "silas.silva@fitenergia.com.br": [
       { "data": "2026-10-23", "valor": 13.50 },
       { "data": "2026-10-27", "valor": 3.25 }
+    ],
+    "taiguara.andrade@fitenergia.com.br": [
+      { "data": "2026-10-30", "valor": 14.85 }
     ],
     "vitor.trafani@fitenergia.com.br": [
       { "data": "2026-10-23", "valor": 4.50 },
