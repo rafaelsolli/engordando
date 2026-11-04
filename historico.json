@@ -1,4 +1,21 @@
 {
+  "2026-11": {
+    "alice.alves@fitenergia.com.br": [
+      { "data": "2026-11-03", "valor": 12.00 }
+    ],
+    "jair.oliveira@fitenergia.com.br": [
+      { "data": "2026-11-03", "valor": 8.75 }
+    ],
+    "joao.ribeiro@fitenergia.com.br": [
+      { "data": "2026-11-03", "valor": 4.25 }
+    ],
+    "rafael.solli@fitenergia.com.br": [
+      { "data": "2026-11-03", "valor": 12.50 }
+    ],
+    "ronan.lopes@fitenergia.com.br": [
+      { "data": "2026-11-03", "valor": 4.25 }
+    ]
+  },
   "2026-10": {
     "alice.alves@fitenergia.com.br": [
       { "data": "2026-10-20", "valor": 4.25 },
