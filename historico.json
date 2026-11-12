@@ -1,19 +1,42 @@
 {
   "2026-11": {
     "alice.alves@fitenergia.com.br": [
-      { "data": "2026-11-03", "valor": 12.00 }
+      { "data": "2026-11-03", "valor": 12.00 },
+      { "data": "2026-11-06", "valor": 4.25 }
+    ],
+    "daniel.ferreira@fitenergia.com.br": [
+      { "data": "2026-11-06", "valor": 8.25 }
     ],
     "jair.oliveira@fitenergia.com.br": [
       { "data": "2026-11-03", "valor": 8.75 }
     ],
+    "jenaro.barbosa@fitenergia.com.br": [
+      { "data": "2026-11-06", "valor": 11.10 }
+    ],
     "joao.ribeiro@fitenergia.com.br": [
-      { "data": "2026-11-03", "valor": 4.25 }
+      { "data": "2026-11-03", "valor": 4.25 },
+      { "data": "2026-11-04", "valor": 4.25 },
+      { "data": "2026-11-11", "valor": 4.60 }
+    ],
+    "marcelo.ramalho@fitenergia.com.br": [
+      { "data": "2026-11-10", "valor": 5.10 }
+    ],
+    "matheus.castor@fitenergia.com.br": [
+      { "data": "2026-11-06", "valor": 3.00 }
     ],
     "rafael.solli@fitenergia.com.br": [
       { "data": "2026-11-03", "valor": 12.50 }
     ],
     "ronan.lopes@fitenergia.com.br": [
-      { "data": "2026-11-03", "valor": 4.25 }
+      { "data": "2026-11-03", "valor": 4.25 },
+      { "data": "2026-11-04", "valor": 6.75 },
+      { "data": "2026-11-05", "valor": 5.50 },
+      { "data": "2026-11-06", "valor": 11.00 },
+      { "data": "2026-11-09", "valor": 14.00 },
+      { "data": "2026-11-11", "valor": 4.25 }
+    ],
+    "vitor.trafani@fitenergia.com.br": [
+      { "data": "2026-11-06", "valor": 4.50 }
     ]
   },
   "2026-10": {
