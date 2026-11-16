@@ -92,7 +92,7 @@
       "imagem": "img/produtos/kitkat.png",
       "categoria": "Chocolates",
       "ativo": true,
-      "esgotado": true,
+      "esgotado": false,
       "kit": true,
       "compras": [
         {
@@ -131,7 +131,7 @@
       "imagem": "img/produtos/trento.png",
       "categoria": "Chocolates",
       "ativo": true,
-      "esgotado": true,
+      "esgotado": false,
       "kit": true,
       "compras": [
         {
